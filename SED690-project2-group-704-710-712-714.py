@@ -186,7 +186,6 @@ if st.button("Run Algorithm"):
 
         st.write("Data Types of Each Column:")
         data_types = df.dtypes  # Get the data types of the columns
-        st.write(data_types)
 
         # Alternatively, you can display as a DataFrame for better formatting
         data_types_df = pd.DataFrame(data_types).reset_index()
@@ -274,19 +273,27 @@ if st.button("Run Algorithm"):
         plt.show()
         st.pyplot(plt)
 
+
+        # Get the correlation of all features with the target column
+        target_correlation = correlation_matrix[target_column]
+
+        # Filter features with correlation greater than 0.1
+        features_above_threshold = target_correlation[abs(target_correlation) >threshold]
+
+
+
+        
+
         # Get pairs of features with correlation greater than the threshold
         high_correlation_pairs = correlation_matrix[(correlation_matrix.abs() > threshold) & (correlation_matrix != 1)]
 
         # Create a list to store feature names and their correlation values
         correlation_data = []
 
-        # Iterate through the high correlation pairs and extract feature names and correlation values
-        for column in high_correlation_pairs.columns:
-            correlated_features = high_correlation_pairs.index[high_correlation_pairs[column].abs() > threshold].tolist()
-            for feature in correlated_features:
-                correlation_value = high_correlation_pairs[column][feature]  # Get correlation value
-                if feature != target_column :
-                    correlation_data.append({"Feature": feature, "Correlation": correlation_value})
+        # Populate the correlation_data list with dictionaries
+        for feature, correlation_value in features_above_threshold.items():
+            if feature != target_column :  # Exclude the target column itself
+                correlation_data.append({"Feature": feature, "Correlation": correlation_value})
 
         # Convert the list to a DataFrame
         correlation_df = pd.DataFrame(correlation_data)
