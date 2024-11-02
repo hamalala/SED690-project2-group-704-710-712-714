@@ -247,9 +247,12 @@ if st.button("Run Algorithm"):
 
         
         st.write("**** Label Encoder Processing ****")
-        text_columns = df.select_dtypes(include=['object']).columns.tolist()
+        text_columns = df.select_dtypes(include=['object']).columns.tolist()  # Get text columns
+
         if text_columns:
-            st.write("Label Encoding Column:" + text_columns)            
+            # Convert the list of text columns to a string for display
+            st.write("Label Encoding Column: " + ", ".join(text_columns))  # Join list elements with a comma            
+            
             # Encode each text column
             for column in text_columns:
                 le = LabelEncoder()
