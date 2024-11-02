@@ -8,6 +8,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import GridSearchCV
+from imblearn.over_sampling import RandomOverSampler
+from imblearn.combine import SMOTEENN
+from imblearn.under_sampling import RandomUnderSampler
 
 def TrainAlg1(X_train, y_train, X_test, y_test):
     from sklearn.pipeline import Pipeline
@@ -111,8 +114,6 @@ def TrainAlg2(X_train, y_train, X_test, y_test):
 
     print(best_params)
     print(best_estimator)
-
-    st.write(f"GaussianNB ไม่มีพารามิเตอร์ที่สำคัญมากนัก")
 
     # Define the pipeline
     model_nb = Pipeline(steps=[
@@ -372,40 +373,100 @@ if st.button("Run Algorithm"):
             plt.show()
             st.pyplot(plt)
 
+            st.write("Cleaned Data:")
+            
 
-            st.write("<h2>With out imbalance</h2>")
-            # Calculate value counts
+            st.markdown("<h2>With out imbalance</h2>")
             value_counts = pd.Series(y).value_counts()
-
-            # Convert value counts to a DataFrame for a tabular display
             value_counts_df = value_counts.reset_index()
-            value_counts_df.columns = ['Value', 'Count']  # Rename columns for clarity
-
-            # Display the value counts as a table in Streamlit
+            value_counts_df.columns = ['Value', 'Count']
             st.write("Value Counts of Target Column:")
             st.table(value_counts_df)
 
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            st.write("<h3>Alg1: RandomForest</h3>")
+            st.markdown("<h3>Alg1: RandomForest</h3>")
             TrainAlg1(X_train, y_train, X_test, y_test)
 
-            st.write("<h3>Alg2: Naive bayes</h3>")
+            st.markdown("<h3>Alg2: Naive bayes</h3>")
             TrainAlg2(X_train, y_train, X_test, y_test)
 
-            st.write("<h3>Alg3: Logistic Regression </h3>")
+            st.markdown("<h3>Alg3: Logistic Regression </h3>")
             TrainAlg3(X_train, y_train, X_test, y_test)
-            
-            
 
 
 
-            
+            # OverSampling
+            st.markdown("<h2>With imbalance : OverSampling</h2>")
+           
+            # สร้างตัวอย่างเพิ่มโดยการทำ Oversampling
+            ros = RandomOverSampler(random_state=42)
+            X_res, y_res = ros.fit_resample(X, y)
+            value_counts = pd.Series(y_res).value_counts()
+            value_counts_df = value_counts.reset_index()
+            value_counts_df.columns = ['Value', 'Count']
+            st.write("Value Counts of Target Column:")
+            st.table(value_counts_df)
 
-        
+            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            st.markdown("<h3>Alg1: RandomForest</h3>")
+            TrainAlg1(X_train, y_train, X_test, y_test)
 
-            st.write("Cleaned Data:")
-            st.write(df.head())
+            st.markdown("<h3>Alg2: Naive bayes</h3>")
+            TrainAlg2(X_train, y_train, X_test, y_test)
+
+            st.markdown("<h3>Alg3: Logistic Regression </h3>")
+            TrainAlg3(X_train, y_train, X_test, y_test)
+
+
+
+            #SMOTE
+            st.markdown("<h2>With imbalance : SMOTE</h2>")
+           
+            # สร้างตัวแปร SMOTEENN
+            smote_enn = SMOTEENN(random_state=42)
+            X_res, y_res = smote_enn.fit_resample(X, y)
+            value_counts = pd.Series(y_res).value_counts()
+            value_counts_df = value_counts.reset_index()
+            value_counts_df.columns = ['Value', 'Count']
+            st.write("Value Counts of Target Column:")
+            st.table(value_counts_df)
+
+            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            st.markdown("<h3>Alg1: RandomForest</h3>")
+            TrainAlg1(X_train, y_train, X_test, y_test)
+
+            st.markdown("<h3>Alg2: Naive bayes</h3>")
+            TrainAlg2(X_train, y_train, X_test, y_test)
+
+            st.markdown("<h3>Alg3: Logistic Regression </h3>")
+            TrainAlg3(X_train, y_train, X_test, y_test)
+
+
+
+            #Undersampling
+            st.markdown("<h2>With imbalance : Undersampling</h2>")
+           
+            # สร้างตัวแปร Undersampling
+            rus = RandomUnderSampler()
+            # Apply Tomek links undersampling
+            X_res, y_res = rus.fit_resample(X, y)
+            value_counts = pd.Series(y_res).value_counts()
+            value_counts_df = value_counts.reset_index()
+            value_counts_df.columns = ['Value', 'Count']
+            st.write("Value Counts of Target Column:")
+            st.table(value_counts_df)
+
+            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            st.markdown("<h3>Alg1: RandomForest</h3>")
+            TrainAlg1(X_train, y_train, X_test, y_test)
+
+            st.markdown("<h3>Alg2: Naive bayes</h3>")
+            TrainAlg2(X_train, y_train, X_test, y_test)
+
+            st.markdown("<h3>Alg3: Logistic Regression </h3>")
+            TrainAlg3(X_train, y_train, X_test, y_test)
+
 
         except Exception as e:
             st.error(f"An error occurred while loading the data: {e}")
