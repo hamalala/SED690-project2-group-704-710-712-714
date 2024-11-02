@@ -224,20 +224,24 @@ if st.button("Run Algorithm"):
 
         
         st.write("**** IQR Processing ****")
-        if iqr_columns_txt != '' :
+        if iqr_columns_txt != '':
             iqr_columns = iqr_columns_txt.split(",")            
-            # Iterate over each fruit in the list
+            # Iterate over each column in the list
             for iqr_column in iqr_columns:
+                # Calculate Q1, Q3, and IQR
                 Q1 = df[iqr_column].quantile(0.25)
                 Q3 = df[iqr_column].quantile(0.75)
                 IQR = Q3 - Q1
 
                 lower_bound = Q1 - 1.5 * IQR
                 upper_bound = Q3 + 1.5 * IQR
-                st.write(iqr_column + " Q1: " + Q1 + ", Q3: " + Q3+ ", IQR: " + IQR+ ", Lower bound: " + lower_bound+ ", Upper bound: " + upper_bound + " ;")
 
-                # Find outliers
-                df = df[(df[iqr_column] < lower_bound) | (df[iqr_column] > upper_bound)]
+                # Convert numerical values to strings for concatenation
+                st.write(f"{iqr_column} Q1: {Q1}, Q3: {Q3}, IQR: {IQR}, Lower bound: {lower_bound}, Upper bound: {upper_bound};")
+
+                # Remove outliers from the DataFrame
+                df = df[(df[iqr_column] >= lower_bound) & (df[iqr_column] <= upper_bound)]
+
         st.write("**** IQR Processed ****")
 
 
