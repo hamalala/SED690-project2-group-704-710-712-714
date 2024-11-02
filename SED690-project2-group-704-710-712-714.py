@@ -221,6 +221,21 @@ if st.button("Run Algorithm"):
         st.write("**** Null value removed ****")
 
 
+        # Calculate the correlation matrix
+        correlation_matrix = df.corr()
+
+        # Set up the matplotlib figure
+        plt.figure(figsize=(10, 8))
+
+        # Create a heatmap using seaborn to visualize the correlation matrix
+        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+
+        # Show the plot
+        plt.title('Correlation Matrix of Features')
+        plt.show()
+        st.pyplot(plt)
+
+
         
         st.write("**** IQR Processing ****")
         if iqr_columns_txt != '':
@@ -242,6 +257,20 @@ if st.button("Run Algorithm"):
                 df = df[(df[iqr_column] >= lower_bound) & (df[iqr_column] <= upper_bound)]
 
         st.write("**** IQR Processed ****")
+
+        # Calculate the correlation matrix
+        correlation_matrix = df.corr()
+
+        # Set up the matplotlib figure
+        plt.figure(figsize=(10, 8))
+
+        # Create a heatmap using seaborn to visualize the correlation matrix
+        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+
+        # Show the plot
+        plt.title('Correlation Matrix of Features')
+        plt.show()
+        st.pyplot(plt)
 
 
         
