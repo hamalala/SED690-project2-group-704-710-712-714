@@ -184,9 +184,16 @@ if st.button("Run Algorithm"):
         st.write(df.head())
 
         # Create a DataFrame to hold the column names and unique values
+        unique_values_list = []
+        for column in df.columns:
+            unique_values = df[column].unique()
+            # Convert unique values to a string representation or list
+            unique_values_str = ', '.join(map(str, unique_values))  # Join values as a string
+            unique_values_list.append(unique_values_str)
+
         unique_values_df = pd.DataFrame({
             'Column': df.columns,
-            'Unique Values': [df[column].unique().tolist() for column in df.columns]
+            'Unique Values': unique_values_list
         })
 
         # Display the unique values table
