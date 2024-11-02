@@ -212,7 +212,7 @@ def TrainAlg3(name, X_train, y_train, X_test, y_test):
 
 
 # Set title
-st.title("Imbalance")
+st.title("Automate Imbalance")
 st.write("Group: 704-710-712-714")
 st.write("\n\n")
 # url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
@@ -590,7 +590,7 @@ if st.session_state.run_algorithm:
                     'F1-Score': row['F1-Score'],
 
                     'model': row['Model'],
-                    'data_types': data_types,
+                    'data_types': column_config,
                     "features": features,
                     "target": target_column,
                     
