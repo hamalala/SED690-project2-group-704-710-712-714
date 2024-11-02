@@ -562,6 +562,27 @@ if st.session_state.run_algorithm:
                 st.write("**Download**")
 
             for index, row in results_df.iterrows():
+
+                data_to_save = {
+                    'Model name': row['Model name'],
+                    'Accuracy': row['Accuracy'],
+                    'Precision': row['Precision'],
+                    'Recall': row['Recall'],
+                    'F1-Score': row['F1-Score'],
+
+                    'model': row['Model'],
+                    'data_types': data_types,
+                    "features": features,
+                    "target": target_column,
+                    
+                    "label_encoders": label_encoders
+                }
+
+                # Save the model and JSON data into a .pkl file
+                with open(f'{row['Model name']}.pkl', 'wb') as file:
+                    pickle.dump(data_to_save, file)
+
+
                 col1, col2, col3, col4, col5, col6 = st.columns([2, 1, 1, 1, 1, 2])
                 with col1:
                     st.write(row['Model name'])
@@ -574,8 +595,15 @@ if st.session_state.run_algorithm:
                 with col5:
                     st.write(f"{row['F1-Score']:.3f}")
                 with col6:
-                    if st.button("Download", key=row['Model name']):
-                        st.success("Button clicked!")
+                    with open(f'{row['Model name']}.pkl', 'rb') as file:
+                        btn = st.download_button(
+                            label="Download Model and config",
+                            data=file,
+                            file_name=f"{row['Model name']}.pkl",
+                            mime="application/octet-stream"
+                        )
+
+
                         
 
         except Exception as e:
