@@ -169,16 +169,15 @@ def TrainAlg3(X_train, y_train, X_test, y_test):
 st.title("Imbalance")
 st.write("Group: 704-710-712-714")
 st.write("\n\n")
-st.write("Enter a google sheet url")
 url = st.text_input("Enter a google sheet url", value="https://drive.google.com/file/d/1HGC-GPDppxEBw7V_2ToxmDxWg1kUebZG")
-st.write("Minimum Correlation")
 number = st.number_input("Minimum Correlation", min_value=0.0, max_value=1.0, step=0.05)
 
 
 if st.button("Run Algorithm"):
-    df = pd.read_csv(url + "export?format=csv", header=None)
-    df.head()
-    for column in df.columns:
-        unique_values = df[column].unique()
-        print(f"'{column}': {unique_values}")
+    st.write(url + "export?format=csv")
+    # df = pd.read_csv(url + "export?format=csv", header=None)
+    # df.head()
+    # for column in df.columns:
+    #     unique_values = df[column].unique()
+    #     print(f"'{column}': {unique_values}")
         
