@@ -294,6 +294,9 @@ if st.button("Run Algorithm"):
         # Convert the list to a DataFrame
         correlation_df = pd.DataFrame(correlation_data)
 
+        # Format the correlation values to two decimal places
+        correlation_df['Correlation'] = correlation_df['Correlation'].map(lambda x: f"{x:.2f}")
+
         # Drop duplicate entries if necessary
         correlation_df = correlation_df.drop_duplicates(subset=["Feature"]).reset_index(drop=True)
 
