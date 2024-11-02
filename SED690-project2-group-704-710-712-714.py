@@ -278,7 +278,7 @@ if st.button("Run Algorithm"):
         target_correlation = correlation_matrix[target_column]
 
         # Filter features with correlation greater than 0.1
-        features_above_threshold = target_correlation[abs(target_correlation) >= threshold]
+        features_above_threshold = target_correlation[abs(target_correlation)]
 
 
         # Create a list to store feature names and their correlation values
