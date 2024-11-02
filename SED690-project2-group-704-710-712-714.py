@@ -174,7 +174,7 @@ st.write("\n\n")
 url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
 remove_columns_txt = st.text_input("Remove Column before process", value="NO,ID")
 number = st.number_input("Minimum Correlation", min_value=0.0, max_value=1.0, step=0.05)
-iqr_columns_txt = st.number_input("Request IQR process column", value="INCOME")
+iqr_columns_txt = st.text_input("Request IQR process column", value="INCOME")
 
 
 if st.button("Run Algorithm"):
@@ -258,7 +258,7 @@ if st.button("Run Algorithm"):
          # Show the plot
         plt.title('Correlation Matrix of Features')
         plt.show()
-        
+
         st.pyplot(plt)
         st.write("**** Correlation Processed ****")
 
