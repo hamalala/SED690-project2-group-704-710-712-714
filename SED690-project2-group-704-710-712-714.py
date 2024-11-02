@@ -174,7 +174,7 @@ st.write("\n\n")
 # url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 remove_columns_txt = st.text_input("Remove Column before process", value="NO,ID")
-threshold = st.number_input("Minimum Correlation", min_value=0.00, max_value=1.000, step=0.05, value=0.01)
+threshold = st.number_input("Minimum Correlation", min_value=0.00, max_value=1.000, step=0.05, format="%.3f", value=0.005)
 iqr_columns_txt = st.text_input("Request IQR process column", value="INCOME")
 target_column = st.text_input("Target column", value="TARGET")
 
