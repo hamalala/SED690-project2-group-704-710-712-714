@@ -11,8 +11,9 @@ from sklearn.model_selection import GridSearchCV
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.combine import SMOTEENN
 from imblearn.under_sampling import RandomUnderSampler
+import pickle
 
-def TrainAlg1(X_train, y_train, X_test, y_test):
+def TrainAlg1(name, X_train, y_train, X_test, y_test):
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import StandardScaler
     from sklearn.ensemble import RandomForestClassifier
@@ -59,6 +60,9 @@ def TrainAlg1(X_train, y_train, X_test, y_test):
     # Make predictions
     y_pred = model.predict(X_test)
 
+    with open(f'{name}.pkl', 'wb') as file:
+        pickle.dump(model, file)
+
 
     summary_eval = classification_report(y_test, y_pred, digits=4, output_dict=True)
 
@@ -81,10 +85,10 @@ def TrainAlg1(X_train, y_train, X_test, y_test):
   
     plt.show()
     st.pyplot(plt)
+    rt = dict(name= name, model=model, summary_eval=summary_eval)
+    return rt
 
-    return summary_eval
-
-def TrainAlg2(X_train, y_train, X_test, y_test):
+def TrainAlg2(name, X_train, y_train, X_test, y_test):
     from sklearn.naive_bayes import GaussianNB
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import StandardScaler
@@ -126,6 +130,9 @@ def TrainAlg2(X_train, y_train, X_test, y_test):
 
     y_pred = model_nb.predict(X_test)
 
+    with open(f'{name}.pkl', 'wb') as file:
+        pickle.dump(model_nb, file)
+
     summary_eval = classification_report(y_test, y_pred, digits=4, output_dict=True)
 
     # Convert the report dictionary to a DataFrame
@@ -148,9 +155,10 @@ def TrainAlg2(X_train, y_train, X_test, y_test):
     plt.show()
     st.pyplot(plt)
 
-    return summary_eval
+    rt = dict(name= name, model=model_nb, summary_eval=summary_eval)
+    return rt
 
-def TrainAlg3(X_train, y_train, X_test, y_test):
+def TrainAlg3(name, X_train, y_train, X_test, y_test):
     from sklearn.linear_model import LogisticRegression
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import StandardScaler
@@ -176,6 +184,9 @@ def TrainAlg3(X_train, y_train, X_test, y_test):
     # Evaluate the model on the test set
     y_pred = model_lr.predict(X_test)
 
+    with open(f'{name}.pkl', 'wb') as file:
+        pickle.dump(model_lr, file)
+
     summary_eval = classification_report(y_test, y_pred, digits=4, output_dict=True)
 
     # Convert the report dictionary to a DataFrame
@@ -196,7 +207,8 @@ def TrainAlg3(X_train, y_train, X_test, y_test):
     plt.show()
     st.pyplot(plt)
 
-    return summary_eval
+    rt = dict(name= name, model=summary_df, summary_eval=summary_eval)
+    return rt
 
 
 # Set title
@@ -376,7 +388,10 @@ if st.button("Run Algorithm"):
             st.write("Cleaned Data:")
             
 
-            st.markdown("<h2>With out imbalance</h2>")
+
+            model_list = []
+
+            st.markdown("##With out imbalance")
             value_counts = pd.Series(y).value_counts()
             value_counts_df = value_counts.reset_index()
             value_counts_df.columns = ['Value', 'Count']
@@ -385,19 +400,19 @@ if st.button("Run Algorithm"):
 
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            st.markdown("<h3>Alg1: RandomForest</h3>")
-            TrainAlg1(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg1: RandomForest")
+            model_list[0] = TrainAlg1('RandomForest with out imbalance', X_train, y_train, X_test, y_test)
 
-            st.markdown("<h3>Alg2: Naive bayes</h3>")
-            TrainAlg2(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg2: Naive bayes")
+            model_list[1] = TrainAlg2('Naive bayes with out imbalance',X_train, y_train, X_test, y_test)
 
-            st.markdown("<h3>Alg3: Logistic Regression </h3>")
-            TrainAlg3(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg3: Logistic Regression ")
+            model_list[2] = TrainAlg3('Logistic Regression with out imbalance',X_train, y_train, X_test, y_test)
 
 
 
             # OverSampling
-            st.markdown("<h2>With imbalance : OverSampling</h2>")
+            st.markdown("##With imbalance : OverSampling")
            
             # สร้างตัวอย่างเพิ่มโดยการทำ Oversampling
             ros = RandomOverSampler(random_state=42)
@@ -409,19 +424,19 @@ if st.button("Run Algorithm"):
             st.table(value_counts_df)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("<h3>Alg1: RandomForest</h3>")
-            TrainAlg1(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg1: RandomForest")
+            model_list[3] = TrainAlg1('RandomForest with OverSampling',X_train, y_train, X_test, y_test)
 
-            st.markdown("<h3>Alg2: Naive bayes</h3>")
-            TrainAlg2(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg2: Naive bayes")
+            model_list[4] = TrainAlg2('Naive bayes with OverSampling', X_train, y_train, X_test, y_test)
 
-            st.markdown("<h3>Alg3: Logistic Regression </h3>")
-            TrainAlg3(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg3: Logistic Regression ")
+            model_list[5] = TrainAlg3('Logistic Regression with OverSampling', X_train, y_train, X_test, y_test)
 
 
 
             #SMOTE
-            st.markdown("<h2>With imbalance : SMOTE</h2>")
+            st.markdown("##With imbalance : SMOTE")
            
             # สร้างตัวแปร SMOTEENN
             smote_enn = SMOTEENN(random_state=42)
@@ -433,19 +448,19 @@ if st.button("Run Algorithm"):
             st.table(value_counts_df)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("<h3>Alg1: RandomForest</h3>")
-            TrainAlg1(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg1: RandomForest")
+            model_list[6] = TrainAlg1('RandomForest with SMOTE', X_train, y_train, X_test, y_test)
 
-            st.markdown("<h3>Alg2: Naive bayes</h3>")
-            TrainAlg2(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg2: Naive bayes")
+            model_list[7] = TrainAlg2('Naive bayes with SMOTE',X_train, y_train, X_test, y_test)
 
-            st.markdown("<h3>Alg3: Logistic Regression </h3>")
-            TrainAlg3(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg3: Logistic Regression ")
+            model_list[8] = TrainAlg3('Logistic Regression with SMOTE',X_train, y_train, X_test, y_test)
 
 
 
             #Undersampling
-            st.markdown("<h2>With imbalance : Undersampling</h2>")
+            st.markdown("##With imbalance : Undersampling")
            
             # สร้างตัวแปร Undersampling
             rus = RandomUnderSampler()
@@ -458,14 +473,43 @@ if st.button("Run Algorithm"):
             st.table(value_counts_df)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("<h3>Alg1: RandomForest</h3>")
-            TrainAlg1(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg1: RandomForest")
+            model_list[9] = TrainAlg1('RandomForest with Undersampling', X_train, y_train, X_test, y_test)
 
-            st.markdown("<h3>Alg2: Naive bayes</h3>")
-            TrainAlg2(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg2: Naive bayes")
+            model_list[10] = TrainAlg2('Naive bayes with Undersampling', X_train, y_train, X_test, y_test)
 
-            st.markdown("<h3>Alg3: Logistic Regression </h3>")
-            TrainAlg3(X_train, y_train, X_test, y_test)
+            st.markdown("###Alg3: Logistic Regression ")
+            model_list[11] = TrainAlg3('Logistic Regression with Undersampling', X_train, y_train, X_test, y_test)
+
+
+            metrics = []
+            # Iterate through each model in the model_list
+            for model_info in model_list:
+                summary_eval = model_info['summary_eval']
+                
+                # Extract metrics from macro average
+                metrics.append({
+                    'Model': model_info['name'],
+                    'Accuracy': summary_eval['accuracy'],
+                    'Precision': summary_eval['macro avg']['precision'],
+                    'Recall': summary_eval['macro avg']['recall'],
+                    'F1-Score': summary_eval['macro avg']['f1-score']
+                })
+
+            # Create a DataFrame from the metrics list
+            metrics_df = pd.DataFrame(metrics)
+
+            # Display the DataFrame
+            print(metrics_df)
+
+            # Create a heatmap
+            plt.figure(figsize=(10, 6))
+            sns.heatmap(metrics_df.set_index('Model').T, annot=True, cmap='YlGnBu', fmt=".4f")
+            plt.title('Model Evaluation Metrics')
+            plt.ylabel('Metrics')
+            plt.xlabel('Models')
+            plt.show()
 
 
         except Exception as e:
