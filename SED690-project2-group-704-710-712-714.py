@@ -246,6 +246,24 @@ if st.session_state.run_algorithm:
             data_types_df.columns = ['Column', 'Data Type']
             st.write(data_types_df)
 
+            # Initialize the column configuration dictionary
+            column_config = {}
+
+            # Iterate over each column in the DataFrame
+            for column in df.columns:
+                unique_values = df[column].unique()
+                if len(unique_values) < 10:
+                    column_config[column] = {
+                        'Data Type': df[column].dtype,  # Optionally add the data type from the DataFrame
+                        'Unique Values': unique_values
+                    }
+                else :
+                    column_config[column] = {
+                        'Data Type': df[column].dtype,  # Optionally add the data type from the DataFrame
+                        'Unique Values': []
+                    }
+
+
             # Display a sample of the data to confirm it's loaded correctly
             # st.write("Sample Data")
             # st.write(df.head())
@@ -419,76 +437,76 @@ if st.session_state.run_algorithm:
 
 
 
-            # # OverSampling
-            # st.markdown("## With imbalance : OverSampling")
+            # OverSampling
+            st.markdown("## With imbalance : OverSampling")
            
-            # # สร้างตัวอย่างเพิ่มโดยการทำ Oversampling
-            # ros = RandomOverSampler(random_state=42)
-            # X_res, y_res = ros.fit_resample(X, y)
-            # value_counts = pd.Series(y_res).value_counts()
-            # value_counts_df = value_counts.reset_index()
-            # value_counts_df.columns = ['Value', 'Count']
-            # st.write("Value Counts of Target Column:")
-            # st.table(value_counts_df)
+            # สร้างตัวอย่างเพิ่มโดยการทำ Oversampling
+            ros = RandomOverSampler(random_state=42)
+            X_res, y_res = ros.fit_resample(X, y)
+            value_counts = pd.Series(y_res).value_counts()
+            value_counts_df = value_counts.reset_index()
+            value_counts_df.columns = ['Value', 'Count']
+            st.write("Value Counts of Target Column:")
+            st.table(value_counts_df)
 
-            # X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            # st.markdown("### Alg1: RandomForest")
-            # model_list.append(TrainAlg1('RandomForest with OverSampling',X_train, y_train, X_test, y_test))
+            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            st.markdown("### Alg1: RandomForest")
+            model_list.append(TrainAlg1('RandomForest with OverSampling',X_train, y_train, X_test, y_test))
 
-            # st.markdown("### Alg2: Naive bayes")
-            # model_list.append(TrainAlg2('Naive bayes with OverSampling', X_train, y_train, X_test, y_test))
+            st.markdown("### Alg2: Naive bayes")
+            model_list.append(TrainAlg2('Naive bayes with OverSampling', X_train, y_train, X_test, y_test))
 
-            # st.markdown("### Alg3: Logistic Regression ")
-            # model_list.append(TrainAlg3('Logistic Regression with OverSampling', X_train, y_train, X_test, y_test))
+            st.markdown("### Alg3: Logistic Regression ")
+            model_list.append(TrainAlg3('Logistic Regression with OverSampling', X_train, y_train, X_test, y_test))
 
 
 
-            # #SMOTE
-            # st.markdown("## With imbalance : SMOTE")
+            #SMOTE
+            st.markdown("## With imbalance : SMOTE")
            
-            # # สร้างตัวแปร SMOTEENN
-            # smote_enn = SMOTEENN(random_state=42)
-            # X_res, y_res = smote_enn.fit_resample(X, y)
-            # value_counts = pd.Series(y_res).value_counts()
-            # value_counts_df = value_counts.reset_index()
-            # value_counts_df.columns = ['Value', 'Count']
-            # st.write("Value Counts of Target Column:")
-            # st.table(value_counts_df)
+            # สร้างตัวแปร SMOTEENN
+            smote_enn = SMOTEENN(random_state=42)
+            X_res, y_res = smote_enn.fit_resample(X, y)
+            value_counts = pd.Series(y_res).value_counts()
+            value_counts_df = value_counts.reset_index()
+            value_counts_df.columns = ['Value', 'Count']
+            st.write("Value Counts of Target Column:")
+            st.table(value_counts_df)
 
-            # X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            # st.markdown("### Alg1: RandomForest")
-            # model_list.append(TrainAlg1('RandomForest with SMOTE', X_train, y_train, X_test, y_test))
+            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            st.markdown("### Alg1: RandomForest")
+            model_list.append(TrainAlg1('RandomForest with SMOTE', X_train, y_train, X_test, y_test))
 
-            # st.markdown("### Alg2: Naive bayes")
-            # model_list.append(TrainAlg2('Naive bayes with SMOTE',X_train, y_train, X_test, y_test))
+            st.markdown("### Alg2: Naive bayes")
+            model_list.append(TrainAlg2('Naive bayes with SMOTE',X_train, y_train, X_test, y_test))
 
-            # st.markdown("### Alg3: Logistic Regression ")
-            # model_list.append(TrainAlg3('Logistic Regression with SMOTE',X_train, y_train, X_test, y_test))
+            st.markdown("### Alg3: Logistic Regression ")
+            model_list.append(TrainAlg3('Logistic Regression with SMOTE',X_train, y_train, X_test, y_test))
 
 
 
-            # #Undersampling
-            # st.markdown("## With imbalance : Undersampling")
+            #Undersampling
+            st.markdown("## With imbalance : Undersampling")
            
-            # # สร้างตัวแปร Undersampling
-            # rus = RandomUnderSampler()
-            # # Apply Tomek links undersampling
-            # X_res, y_res = rus.fit_resample(X, y)
-            # value_counts = pd.Series(y_res).value_counts()
-            # value_counts_df = value_counts.reset_index()
-            # value_counts_df.columns = ['Value', 'Count']
-            # st.write("Value Counts of Target Column:")
-            # st.table(value_counts_df)
+            # สร้างตัวแปร Undersampling
+            rus = RandomUnderSampler()
+            # Apply Tomek links undersampling
+            X_res, y_res = rus.fit_resample(X, y)
+            value_counts = pd.Series(y_res).value_counts()
+            value_counts_df = value_counts.reset_index()
+            value_counts_df.columns = ['Value', 'Count']
+            st.write("Value Counts of Target Column:")
+            st.table(value_counts_df)
 
-            # X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            # st.markdown("### Alg1: RandomForest")
-            # model_list.append(TrainAlg1('RandomForest with Undersampling', X_train, y_train, X_test, y_test))
+            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            st.markdown("### Alg1: RandomForest")
+            model_list.append(TrainAlg1('RandomForest with Undersampling', X_train, y_train, X_test, y_test))
 
-            # st.markdown("### Alg2: Naive bayes")
-            # model_list.append(TrainAlg2('Naive bayes with Undersampling', X_train, y_train, X_test, y_test))
+            st.markdown("### Alg2: Naive bayes")
+            model_list.append(TrainAlg2('Naive bayes with Undersampling', X_train, y_train, X_test, y_test))
 
-            # st.markdown("### Alg3: Logistic Regression ")
-            # model_list.append(TrainAlg3('Logistic Regression with Undersampling', X_train, y_train, X_test, y_test))
+            st.markdown("### Alg3: Logistic Regression ")
+            model_list.append(TrainAlg3('Logistic Regression with Undersampling', X_train, y_train, X_test, y_test))
 
 
             # Assuming model_list is already filled with the models and their evaluation summaries
