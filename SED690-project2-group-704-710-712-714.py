@@ -411,76 +411,76 @@ if st.button("Run Algorithm"):
 
 
 
-            # OverSampling
-            st.markdown("## With imbalance : OverSampling")
+            # # OverSampling
+            # st.markdown("## With imbalance : OverSampling")
            
-            # สร้างตัวอย่างเพิ่มโดยการทำ Oversampling
-            ros = RandomOverSampler(random_state=42)
-            X_res, y_res = ros.fit_resample(X, y)
-            value_counts = pd.Series(y_res).value_counts()
-            value_counts_df = value_counts.reset_index()
-            value_counts_df.columns = ['Value', 'Count']
-            st.write("Value Counts of Target Column:")
-            st.table(value_counts_df)
+            # # สร้างตัวอย่างเพิ่มโดยการทำ Oversampling
+            # ros = RandomOverSampler(random_state=42)
+            # X_res, y_res = ros.fit_resample(X, y)
+            # value_counts = pd.Series(y_res).value_counts()
+            # value_counts_df = value_counts.reset_index()
+            # value_counts_df.columns = ['Value', 'Count']
+            # st.write("Value Counts of Target Column:")
+            # st.table(value_counts_df)
 
-            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("### Alg1: RandomForest")
-            model_list.append(TrainAlg1('RandomForest with OverSampling',X_train, y_train, X_test, y_test))
+            # X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            # st.markdown("### Alg1: RandomForest")
+            # model_list.append(TrainAlg1('RandomForest with OverSampling',X_train, y_train, X_test, y_test))
 
-            st.markdown("### Alg2: Naive bayes")
-            model_list.append(TrainAlg2('Naive bayes with OverSampling', X_train, y_train, X_test, y_test))
+            # st.markdown("### Alg2: Naive bayes")
+            # model_list.append(TrainAlg2('Naive bayes with OverSampling', X_train, y_train, X_test, y_test))
 
-            st.markdown("### Alg3: Logistic Regression ")
-            model_list.append(TrainAlg3('Logistic Regression with OverSampling', X_train, y_train, X_test, y_test))
+            # st.markdown("### Alg3: Logistic Regression ")
+            # model_list.append(TrainAlg3('Logistic Regression with OverSampling', X_train, y_train, X_test, y_test))
 
 
 
-            #SMOTE
-            st.markdown("## With imbalance : SMOTE")
+            # #SMOTE
+            # st.markdown("## With imbalance : SMOTE")
            
-            # สร้างตัวแปร SMOTEENN
-            smote_enn = SMOTEENN(random_state=42)
-            X_res, y_res = smote_enn.fit_resample(X, y)
-            value_counts = pd.Series(y_res).value_counts()
-            value_counts_df = value_counts.reset_index()
-            value_counts_df.columns = ['Value', 'Count']
-            st.write("Value Counts of Target Column:")
-            st.table(value_counts_df)
+            # # สร้างตัวแปร SMOTEENN
+            # smote_enn = SMOTEENN(random_state=42)
+            # X_res, y_res = smote_enn.fit_resample(X, y)
+            # value_counts = pd.Series(y_res).value_counts()
+            # value_counts_df = value_counts.reset_index()
+            # value_counts_df.columns = ['Value', 'Count']
+            # st.write("Value Counts of Target Column:")
+            # st.table(value_counts_df)
 
-            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("### Alg1: RandomForest")
-            model_list.append(TrainAlg1('RandomForest with SMOTE', X_train, y_train, X_test, y_test))
+            # X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            # st.markdown("### Alg1: RandomForest")
+            # model_list.append(TrainAlg1('RandomForest with SMOTE', X_train, y_train, X_test, y_test))
 
-            st.markdown("### Alg2: Naive bayes")
-            model_list.append(TrainAlg2('Naive bayes with SMOTE',X_train, y_train, X_test, y_test))
+            # st.markdown("### Alg2: Naive bayes")
+            # model_list.append(TrainAlg2('Naive bayes with SMOTE',X_train, y_train, X_test, y_test))
 
-            st.markdown("### Alg3: Logistic Regression ")
-            model_list.append(TrainAlg3('Logistic Regression with SMOTE',X_train, y_train, X_test, y_test))
+            # st.markdown("### Alg3: Logistic Regression ")
+            # model_list.append(TrainAlg3('Logistic Regression with SMOTE',X_train, y_train, X_test, y_test))
 
 
 
-            #Undersampling
-            st.markdown("## With imbalance : Undersampling")
+            # #Undersampling
+            # st.markdown("## With imbalance : Undersampling")
            
-            # สร้างตัวแปร Undersampling
-            rus = RandomUnderSampler()
-            # Apply Tomek links undersampling
-            X_res, y_res = rus.fit_resample(X, y)
-            value_counts = pd.Series(y_res).value_counts()
-            value_counts_df = value_counts.reset_index()
-            value_counts_df.columns = ['Value', 'Count']
-            st.write("Value Counts of Target Column:")
-            st.table(value_counts_df)
+            # # สร้างตัวแปร Undersampling
+            # rus = RandomUnderSampler()
+            # # Apply Tomek links undersampling
+            # X_res, y_res = rus.fit_resample(X, y)
+            # value_counts = pd.Series(y_res).value_counts()
+            # value_counts_df = value_counts.reset_index()
+            # value_counts_df.columns = ['Value', 'Count']
+            # st.write("Value Counts of Target Column:")
+            # st.table(value_counts_df)
 
-            X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("### Alg1: RandomForest")
-            model_list.append(TrainAlg1('RandomForest with Undersampling', X_train, y_train, X_test, y_test))
+            # X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+            # st.markdown("### Alg1: RandomForest")
+            # model_list.append(TrainAlg1('RandomForest with Undersampling', X_train, y_train, X_test, y_test))
 
-            st.markdown("### Alg2: Naive bayes")
-            model_list.append(TrainAlg2('Naive bayes with Undersampling', X_train, y_train, X_test, y_test))
+            # st.markdown("### Alg2: Naive bayes")
+            # model_list.append(TrainAlg2('Naive bayes with Undersampling', X_train, y_train, X_test, y_test))
 
-            st.markdown("### Alg3: Logistic Regression ")
-            model_list.append(TrainAlg3('Logistic Regression with Undersampling', X_train, y_train, X_test, y_test))
+            # st.markdown("### Alg3: Logistic Regression ")
+            # model_list.append(TrainAlg3('Logistic Regression with Undersampling', X_train, y_train, X_test, y_test))
 
 
             # Assuming model_list is already filled with the models and their evaluation summaries
@@ -539,12 +539,22 @@ if st.button("Run Algorithm"):
 
             # Display the DataFrame
             st.write("### Model Performance Results")
-            st.write(f"**Model Name:** \t|**Accuracy:** \t|**Precision:** \t|**Recall:** \t|**F1-Score:** \t|")
-            for index, row in results_df.iterrows():
-                # Creating two columns for inline layout
-                col1, col2, col3, col4, col5, col6 = st.columns([2, 1, 1, 1, 1, 2])  # Adjust the width ratio as needed
+            col1, col2, col3, col4, col5, col6 = st.columns([2, 1, 1, 1, 1, 2])
+            with col1:
+                st.write("**Model Name**")
+            with col2:
+                st.write("**Accuracy**")
+            with col3:
+                st.write("**Precision**")
+            with col4:
+                st.write("**Recall**")
+            with col5:
+                st.write("**F1-Score**")
+            with col6:
+                st.write("**Download**")
 
-                # Text in the first column
+            for index, row in results_df.iterrows():
+                col1, col2, col3, col4, col5, col6 = st.columns([2, 1, 1, 1, 1, 2])
                 with col1:
                     st.write(row['Model name'])
                 with col2:
@@ -555,10 +565,8 @@ if st.button("Run Algorithm"):
                     st.write(row['Recall'])
                 with col5:
                     st.write(row['F1-Score'])
-
-                # Button in the second column
                 with col6:
-                    if st.button("Download"):
+                    if st.button("Download", key=row['Model name']):
                         st.success("Button clicked!")
                         
 
