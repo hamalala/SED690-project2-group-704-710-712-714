@@ -506,13 +506,21 @@ if st.button("Run Algorithm"):
 
             # Display the DataFrame
             st.table(results_df)
+            # Create buttons for each row
+            for index, row in results_df.iterrows():
+                if st.button(f'Action for {row["Name"]}', key=index):  # Use index as a unique key
+                    st.success(f'Action performed for {row["Name"]}!')
+                    # Add your action logic here
+
+            # Create a heatmap for the metrics
+            heatmap_data = results_df.set_index('Model').T  # Transpose the DataFrame to switch x and y
 
             # Create a heatmap for the metrics
             plt.figure(figsize=(10, 6))
-            sns.heatmap(results_df.set_index('Model').T, annot=True, fmt=".4f", cmap='coolwarm', cbar=True)
+            sns.heatmap(heatmap_data, annot=True, fmt=".4f", cmap='coolwarm', cbar=True)
             plt.title('Model Performance Metrics')
-            plt.ylabel('Models')
             plt.xlabel('Metrics')
+            plt.ylabel('Models')  # Update the labels to reflect the swap
             plt.show()
             st.pyplot(plt)
 
