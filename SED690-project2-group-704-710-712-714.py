@@ -174,10 +174,14 @@ number = st.number_input("Minimum Correlation", min_value=0.0, max_value=1.0, st
 
 
 if st.button("Run Algorithm"):
-    st.write(url + "/export?format=csv")
+    st.write("Analize Data from " + url + "/export?format=csv")
     df = pd.read_csv(url + "/export?format=csv", header=None)
-    df.head()
-    for column in df.columns:
-        unique_values = df[column].unique()
-        print(f"'{column}': {unique_values}")
+
+    # Create a new DataFrame to hold the column names and unique values
+    unique_values_df = pd.DataFrame({
+        'Column': df.columns,
+        'Unique Values': [df[column].unique() for column in df.columns]
+    })
+    # Display the unique values table
+    st.table(unique_values_df)
         
