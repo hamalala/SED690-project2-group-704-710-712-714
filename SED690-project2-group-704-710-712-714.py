@@ -264,35 +264,37 @@ if st.button("Run Algorithm"):
         st.write("**** Correlation Processing ****")
         # Calculate the correlation matrix
         correlation_matrix = df.corr()
+
         # Set up the matplotlib figure
         plt.figure(figsize=(10, 8))
+
         # Create a heatmap using seaborn to visualize the correlation matrix
         sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
-         # Show the plot
+
+        # Show the plot
         plt.title('Correlation Matrix of Features')
         plt.show()
         st.pyplot(plt)
 
-
+       
         # Get the correlation of all features with the target column
         target_correlation = correlation_matrix[target_column]
 
-        # Filter features with correlation greater than 0.1
-        features_above_threshold = target_correlation[abs(target_correlation)]
-
+        # Filter features with absolute correlation greater than or equal to the threshold
+        features_above_threshold = target_correlation[abs(target_correlation) >= threshold]
 
         # Create a list to store feature names and their correlation values
         correlation_data = []
 
         # Populate the correlation_data list with dictionaries
         for feature, correlation_value in features_above_threshold.items():
-            if feature != target_column :  # Exclude the target column itself
+            if feature != target_column:  # Exclude the target column itself
                 correlation_data.append({"Feature": feature, "Correlation": correlation_value})
 
         # Convert the list to a DataFrame
         correlation_df = pd.DataFrame(correlation_data)
 
-        # Drop duplicate entries if necessary, keeping the feature name and its highest correlation value
+        # Drop duplicate entries if necessary
         correlation_df = correlation_df.drop_duplicates(subset=["Feature"]).reset_index(drop=True)
 
         # Display the features and their correlation values in a table
