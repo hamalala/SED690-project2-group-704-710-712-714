@@ -488,15 +488,17 @@ if st.button("Run Algorithm"):
 
             for model_info in model_list:
                 name = model_info['name']
+                model = model_info['model']
                 summary_eval = model_info['summary_eval']
                 
                 # Extract metrics from the macro average
                 metrics = {
-                    'Model': name,
+                    'Model name': name,
                     'Accuracy': summary_eval['accuracy'],
                     'Precision': summary_eval['macro avg']['precision'],
                     'Recall': summary_eval['macro avg']['recall'],
-                    'F1-Score': summary_eval['macro avg']['f1-score']
+                    'F1-Score': summary_eval['macro avg']['f1-score'],
+                    'Model': model
                 }
                 
                 results.append(metrics)
@@ -505,15 +507,23 @@ if st.button("Run Algorithm"):
             results_df = pd.DataFrame(results)
 
             # Display the DataFrame
-            st.table(results_df)
-            # Create buttons for each row
+            st.write("### Model Performance Results")
             for index, row in results_df.iterrows():
-                if st.button(f'Action for {row["Name"]}', key=index):  # Use index as a unique key
-                    st.success(f'Action performed for {row["Name"]}!')
-                    # Add your action logic here
+                st.write(f"**Model Name:** {row['Model name']}")
+                st.write(f"**Accuracy:** {row['Accuracy']:.2f}")
+                st.write(f"**Precision:** {row['Precision']:.2f}")
+                st.write(f"**Recall:** {row['Recall']:.2f}")
+                st.write(f"**F1-Score:** {row['F1-Score']:.2f}")                
+                # Add a button for each model
+                if st.button(f"Details for {row['Model name']}"):
+                    st.write(f"You clicked on {row['Model name']}!")  # Action for button click
+
+                st.write("---")  # Separator for better readability
+                        
+           
 
             # Create a heatmap for the metrics
-            heatmap_data = results_df.set_index('Model').T  # Transpose the DataFrame to switch x and y
+            heatmap_data = results_df.set_index('Model name').T  # Transpose the DataFrame to switch x and y
 
             # Create a heatmap for the metrics
             plt.figure(figsize=(10, 6))
