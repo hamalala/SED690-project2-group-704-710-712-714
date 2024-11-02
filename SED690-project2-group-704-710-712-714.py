@@ -3,168 +3,199 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
-
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.model_selection import GridSearchCV
 
 def TrainAlg1(X_train, y_train, X_test, y_test):
-  from sklearn.model_selection import GridSearchCV
-  from sklearn.pipeline import Pipeline
-  from sklearn.preprocessing import StandardScaler
-  from sklearn.ensemble import RandomForestClassifier
-  from sklearn.metrics import confusion_matrix, classification_report
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.ensemble import RandomForestClassifier
 
-  # Define the pipeline
-  model = Pipeline(steps=[
-      ('scaler', StandardScaler()),  # Normalization step
-      ('rf', RandomForestClassifier(random_state=42))  # You can replace this with any other classifier
-  ])
+    # Define the pipeline
+    model = Pipeline(steps=[
+        ('scaler', StandardScaler()),  # Normalization step
+        ('rf', RandomForestClassifier(random_state=42))  # You can replace this with any other classifier
+    ])
 
-  param_grid = {
-      'rf__n_estimators': [10, 100, 1000],
-      'rf__max_depth': [None, 10, 20],
-  }
+    param_grid = {
+        'rf__n_estimators': [10, 100, 1000],
+        'rf__max_depth': [None, 10, 20],
+    }
 
 
-  # Create GridSearchCV
-  grid_search = GridSearchCV(model, param_grid, cv=5, scoring='accuracy')  # You can adjust cv (cross-validation) as needed
+    # Create GridSearchCV
+    grid_search = GridSearchCV(model, param_grid, cv=5, scoring='accuracy')  # You can adjust cv (cross-validation) as needed
 
-  # Fit the pipeline with GridSearchCV
-  grid_search.fit(X_train, y_train)
+    # Fit the pipeline with GridSearchCV
+    grid_search.fit(X_train, y_train)
 
-  # Access the best parameters and best estimator
-  best_params = grid_search.best_params_
-  best_estimator = grid_search.best_estimator_
-  print(best_params)
-  print(best_estimator)
+    # Access the best parameters and best estimator
+    best_params = grid_search.best_params_
+    best_estimator = grid_search.best_estimator_
 
 
-  # Define the pipeline
-  model = Pipeline(steps=[
-      ('scaler', StandardScaler()),  # Normalization step
-      ('rf', RandomForestClassifier(random_state=42, max_depth=best_params['rf__max_depth'], n_estimators=best_params['rf__n_estimators']))  # You can replace this with any other classifier
-  ])
-
-  # Fit the pipeline
-  model.fit(X_train, y_train)
+    print(best_params)
+    print(best_estimator)
 
 
+    # Define the pipeline
+    model = Pipeline(steps=[
+        ('scaler', StandardScaler()),  # Normalization step
+        ('rf', RandomForestClassifier(random_state=42, max_depth=best_params['rf__max_depth'], n_estimators=best_params['rf__n_estimators']))  # You can replace this with any other classifier
+    ])
+
+    # Fit the pipeline
+    model.fit(X_train, y_train)
 
 
-  # Make predictions
-  y_pred = model.predict(X_test)
 
-  summary_eval = classification_report(y_test,y_pred,digits=4)
-  print(summary_eval)
 
-  # Calculate the confusion matrix
-  cm = confusion_matrix(y_test, y_pred)
+    # Make predictions
+    y_pred = model.predict(X_test)
 
-  # Plot the confusion matrix using seaborn heatmap
-  plt.figure(figsize=(6, 4))
-  sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', )
-  plt.title('Confusion Matrix: Random Forest')
-  plt.xlabel('Predicted')
-  plt.ylabel('True')
-  # Save the plot as an image file (e.g., PNG)
-  plt.savefig('confusion_matrix_randforest.png')
 
-  plt.show()
+    summary_eval = classification_report(y_test, y_pred, digits=4, output_dict=True)
+
+    # Convert the report dictionary to a DataFrame
+    summary_df = pd.DataFrame(summary_eval).transpose()
+
+    # Display the DataFrame as a table in Streamlit
+    st.write("Classification Report:")
+    st.table(summary_df)
+
+    # Calculate the confusion matrix
+    cm = confusion_matrix(y_test, y_pred)
+
+    # Plot the confusion matrix using seaborn heatmap
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', )
+    plt.title('Confusion Matrix: Random Forest')
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+  
+    plt.show()
+    st.pyplot(plt)
+
+    return summary_eval
 
 def TrainAlg2(X_train, y_train, X_test, y_test):
-  from sklearn.naive_bayes import GaussianNB
-  from sklearn.pipeline import Pipeline
-  from sklearn.preprocessing import StandardScaler
-  from sklearn.pipeline import Pipeline
-  from sklearn.preprocessing import StandardScaler
-  from sklearn.ensemble import RandomForestClassifier
+    from sklearn.naive_bayes import GaussianNB
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.ensemble import RandomForestClassifier
 
 
-  # Define the pipeline with Naive Bayes
-  model_nb = Pipeline(steps=[
-      ('scaler', StandardScaler()),  # Normalization step
-      ('naive_bayes', GaussianNB())  # Naive Bayes model
-  ])
+    # Define the pipeline with Naive Bayes
+    model_nb = Pipeline(steps=[
+        ('scaler', StandardScaler()),  # Normalization step
+        ('naive_bayes', GaussianNB())  # Naive Bayes model
+    ])
 
-  # Set up the parameter grid for Grid Search (Naive Bayes doesn't have many parameters)
-  param_grid = {
-      # GaussianNB ไม่มีพารามิเตอร์ที่สำคัญมากนัก
-  }
+    # Set up the parameter grid for Grid Search (Naive Bayes doesn't have many parameters)
+    param_grid = {
+        # GaussianNB ไม่มีพารามิเตอร์ที่สำคัญมากนัก
+    }
 
-  # Perform Grid Search with Cross-Validation (ในกรณีนี้จะใช้ model เรียบง่าย)
-  grid_search = GridSearchCV(model_nb, param_grid, cv=5, scoring='accuracy')
-  grid_search.fit(X_train, y_train)
+    # Perform Grid Search with Cross-Validation (ในกรณีนี้จะใช้ model เรียบง่าย)
+    grid_search = GridSearchCV(model_nb, param_grid, cv=5, scoring='accuracy')
+    grid_search.fit(X_train, y_train)
 
-  # Get the Best Parameters and Model
-  best_params = grid_search.best_params_
-  best_estimator = grid_search.best_estimator_
+    # Get the Best Parameters and Model
+    best_params = grid_search.best_params_
+    best_estimator = grid_search.best_estimator_
 
-  print(best_params)
-  print(best_estimator)
+    print(best_params)
+    print(best_estimator)
 
-  # Define the pipeline
-  model_nb = Pipeline(steps=[
-      ('scaler', StandardScaler()),  # Normalization step
-      ('naive_bayes', GaussianNB())  # You can replace this with any other classifier
-  ])
+    st.write(f"GaussianNB ไม่มีพารามิเตอร์ที่สำคัญมากนัก")
 
-  # Fit the pipeline
-  model_nb.fit(X_train, y_train)
+    # Define the pipeline
+    model_nb = Pipeline(steps=[
+        ('scaler', StandardScaler()),  # Normalization step
+        ('naive_bayes', GaussianNB())  # You can replace this with any other classifier
+    ])
 
-  y_pred = model_nb.predict(X_test)
+    # Fit the pipeline
+    model_nb.fit(X_train, y_train)
 
-  summary_eval = classification_report(y_test,y_pred,digits=4)
-  print(summary_eval)
+    y_pred = model_nb.predict(X_test)
 
-  # Calculate the confusion matrix
-  cm = confusion_matrix(y_test, y_pred)
+    summary_eval = classification_report(y_test, y_pred, digits=4, output_dict=True)
 
-  # Plot the confusion matrix using seaborn heatmap
-  plt.figure(figsize=(6, 4))
-  sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', )
-  plt.title('Confusion Matrix: Naive bayes')
-  plt.xlabel('Predicted')
-  plt.ylabel('True')
-  # Save the plot as an image file (e.g., PNG)
-  plt.savefig('confusion_matrix_NaiveBayes.png')
+    # Convert the report dictionary to a DataFrame
+    summary_df = pd.DataFrame(summary_eval).transpose()
 
-  plt.show()
+    # Display the DataFrame as a table in Streamlit
+    st.write("Classification Report:")
+    st.table(summary_df)
+
+    # Calculate the confusion matrix
+    cm = confusion_matrix(y_test, y_pred)
+
+    # Plot the confusion matrix using seaborn heatmap
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', )
+    plt.title('Confusion Matrix: Naive bayes')
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+
+    plt.show()
+    st.pyplot(plt)
+
+    return summary_eval
 
 def TrainAlg3(X_train, y_train, X_test, y_test):
-  from sklearn.linear_model import LogisticRegression
-  from sklearn.pipeline import Pipeline
-  from sklearn.preprocessing import StandardScaler
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
 
-  # Output model performance
-  from sklearn.metrics import classification_report, confusion_matrix
+    # Output model performance
+    from sklearn.metrics import classification_report, confusion_matrix
 
-  # Define the pipeline with the best parameters
-  model_lr = Pipeline(steps=[
-      ('scaler', StandardScaler()),  # Normalization step
-      ('log_reg', LogisticRegression(
-          C=0.1,                # Regularization strength
-          penalty='l2',         # L2 norm used in penalization
-          solver='liblinear',   # Solver for optimization
-          random_state=42,
-          max_iter=10000        # Allow more iterations if needed
-      ))
-  ])
+    # Define the pipeline with the best parameters
+    model_lr = Pipeline(steps=[
+        ('scaler', StandardScaler()),  # Normalization step
+        ('log_reg', LogisticRegression(
+            C=0.1,                # Regularization strength
+            penalty='l2',         # L2 norm used in penalization
+            solver='liblinear',   # Solver for optimization
+            random_state=42,
+            max_iter=10000        # Allow more iterations if needed
+        ))
+    ])
 
-  # Fit the pipeline with the training data
-  model_lr.fit(X_train, y_train)
+    # Fit the pipeline with the training data
+    model_lr.fit(X_train, y_train)
 
-  # Evaluate the model on the test set
-  y_pred = model_lr.predict(X_test)
+    # Evaluate the model on the test set
+    y_pred = model_lr.predict(X_test)
 
-  # Classification report
-  print("Classification Report:\n", classification_report(y_test, y_pred, digits=4))
+    summary_eval = classification_report(y_test, y_pred, digits=4, output_dict=True)
 
-  # Confusion matrix
-  cm = confusion_matrix(y_test, y_pred)
-  plt.figure(figsize=(6, 4))
-  sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-  plt.title('Confusion Matrix: Logistic Regression')
-  plt.xlabel('Predicted')
-  plt.ylabel('True')
-  plt.show()
+    # Convert the report dictionary to a DataFrame
+    summary_df = pd.DataFrame(summary_eval).transpose()
+
+    # Display the DataFrame as a table in Streamlit
+    st.write("Classification Report:")
+    st.table(summary_df)
+    
+
+    # Confusion matrix
+    cm = confusion_matrix(y_test, y_pred)
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+    plt.title('Confusion Matrix: Logistic Regression')
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.show()
+    st.pyplot(plt)
+
+    return summary_eval
 
 
 # Set title
@@ -273,7 +304,7 @@ if st.button("Run Algorithm"):
             plt.figure(figsize=(10, 8))
 
             # Create a heatmap using seaborn to visualize the correlation matrix
-            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.3f', linewidths=0.5)
 
             # Show the plot
             plt.title('Correlation Matrix of Features')
@@ -299,7 +330,7 @@ if st.button("Run Algorithm"):
             correlation_df = pd.DataFrame(correlation_data)
 
             # Format the correlation values to two decimal places
-            correlation_df['Correlation'] = correlation_df['Correlation'].map(lambda x: f"{x:.2f}")
+            correlation_df['Correlation'] = correlation_df['Correlation'].map(lambda x: f"{x:.3f}")
 
             # Drop duplicate entries if necessary
             correlation_df = correlation_df.drop_duplicates(subset=["Feature"]).reset_index(drop=True)
@@ -313,6 +344,60 @@ if st.button("Run Algorithm"):
 
 
             st.write("**** Correlation Processed ****")
+
+            features = [item["Feature"] for item in correlation_data]
+            X = df[features]
+            y = df[target_column]
+
+
+            
+            # Standardize the features
+            scaler = StandardScaler()
+            X_scaled = scaler.fit_transform(X)
+
+            # Apply PCA
+            pca = PCA(n_components=2)
+            X_pca = pca.fit_transform(X_scaled)
+
+            # Create a DataFrame with PCA components and target variable
+            pca_df = pd.DataFrame(data={'PCA1': X_pca[:, 0], 'PCA2': X_pca[:, 1], 'target': y})
+
+            # Plot the PCA components
+            plt.figure(figsize=(10, 8))
+            sns.scatterplot(x='PCA1', y='PCA2', hue='target', data=pca_df, palette='viridis', s=50)
+            plt.title('PCA of Features Colored by Target Variable')
+            plt.xlabel('Principal Component 1')
+            plt.ylabel('Principal Component 2')
+            plt.legend(title='Target', loc='upper right')
+            plt.show()
+            st.pyplot(plt)
+
+
+            st.write("<h2>With out imbalance</h2>")
+            # Calculate value counts
+            value_counts = pd.Series(y).value_counts()
+
+            # Convert value counts to a DataFrame for a tabular display
+            value_counts_df = value_counts.reset_index()
+            value_counts_df.columns = ['Value', 'Count']  # Rename columns for clarity
+
+            # Display the value counts as a table in Streamlit
+            st.write("Value Counts of Target Column:")
+            st.table(value_counts_df)
+
+
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            st.write("<h3>Alg1: RandomForest</h3>")
+            TrainAlg1(X_train, y_train, X_test, y_test)
+
+            st.write("<h3>Alg2: Naive bayes</h3>")
+            TrainAlg2(X_train, y_train, X_test, y_test)
+
+            st.write("<h3>Alg3: Logistic Regression </h3>")
+            TrainAlg3(X_train, y_train, X_test, y_test)
+            
+            
+
 
 
             
