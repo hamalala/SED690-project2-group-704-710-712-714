@@ -222,7 +222,15 @@ threshold = st.number_input("Minimum Correlation", min_value=0.00, max_value=1.0
 iqr_columns_txt = st.text_input("Request IQR process column", value="INCOME")
 target_column = st.text_input("Target column", value="TARGET")
 
+
+if 'run_algorithm' not in st.session_state:
+    st.session_state.run_algorithm = False
+
+
 if st.button("Run Algorithm"):
+    st.session_state.run_algorithm = True
+
+if st.session_state.run_algorithm:
     if uploaded_file is not None:
         try:
             # Attempt to read the CSV file
@@ -558,13 +566,13 @@ if st.button("Run Algorithm"):
                 with col1:
                     st.write(row['Model name'])
                 with col2:
-                    st.write(row['Accuracy'])
+                    st.write(f"{row['Accuracy']:.3f}")
                 with col3:
-                    st.write(row['Precision'])
+                    st.write(f"{row['Precision']:.3f}")
                 with col4:
-                    st.write(row['Recall'])
+                    st.write(f"{row['Recall']:.3f}")
                 with col5:
-                    st.write(row['F1-Score'])
+                    st.write(f"{row['F1-Score']:.3f}")
                 with col6:
                     if st.button("Download", key=row['Model name']):
                         st.success("Button clicked!")
