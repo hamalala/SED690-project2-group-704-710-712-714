@@ -251,11 +251,12 @@ if st.session_state.run_algorithm:
 
             # Iterate over each column in the DataFrame
             for column in df.columns:
+                unique_values_list = [] 
                 unique_values = df[column].unique()
                 if len(unique_values) < 10:
                     column_config[column] = {
                         'Data Type': df[column].dtype,  # Optionally add the data type from the DataFrame
-                        'Unique Values': unique_values
+                        'Unique Values': unique_values.tolist()
                     }
                 else :
                     column_config[column] = {
