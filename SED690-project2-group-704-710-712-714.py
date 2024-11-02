@@ -184,6 +184,15 @@ if st.button("Run Algorithm"):
         df = pd.read_csv(url + "/export?format=csv")
         label_encoders = {}
 
+        st.write("Data Types of Each Column:")
+        data_types = df.dtypes  # Get the data types of the columns
+        st.write(data_types)
+
+        # Alternatively, you can display as a DataFrame for better formatting
+        data_types_df = pd.DataFrame(data_types).reset_index()
+        data_types_df.columns = ['Column', 'Data Type']
+        st.write(data_types_df)
+
         # Display a sample of the data to confirm it's loaded correctly
         # st.write("Sample Data")
         # st.write(df.head())
