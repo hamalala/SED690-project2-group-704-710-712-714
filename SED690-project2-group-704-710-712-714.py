@@ -186,7 +186,7 @@ if st.button("Run Algorithm"):
         # Create a DataFrame to hold the column names and unique values
         unique_values_df = pd.DataFrame({
             'Column': df.columns,
-            'Unique Values': [df[column].unique() for column in df.columns]
+            'Unique Values': [df[column].unique().tolist() for column in df.columns]
         })
 
         # Display the unique values table
