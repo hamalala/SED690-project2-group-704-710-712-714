@@ -171,198 +171,172 @@ def TrainAlg3(X_train, y_train, X_test, y_test):
 st.title("Imbalance")
 st.write("Group: 704-710-712-714")
 st.write("\n\n")
-url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
+# url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
+uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 remove_columns_txt = st.text_input("Remove Column before process", value="NO,ID")
 threshold = st.number_input("Minimum Correlation", min_value=0.00, max_value=1.000, step=0.05, value=0.01)
 iqr_columns_txt = st.text_input("Request IQR process column", value="INCOME")
 target_column = st.text_input("Target column", value="TARGET")
 
 if st.button("Run Algorithm"):
-    st.write("Analize Data from " + url + "/export?format=csv")
-    try:
-        # Attempt to read the CSV file
-        df = pd.read_csv(url + "/export?format=csv")
-        label_encoders = {}
+    if uploaded_file is not None:
+        try:
+            # Attempt to read the CSV file
+            # df = pd.read_csv(url + "/export?format=csv")
+            df = pd.read_csv(uploaded_file)
+            label_encoders = {}
 
-        st.write("Data Types of Each Column:")
-        data_types = df.dtypes  # Get the data types of the columns
+            st.write("Data Types of Each Column:")
+            data_types = df.dtypes  # Get the data types of the columns
 
-        # Alternatively, you can display as a DataFrame for better formatting
-        data_types_df = pd.DataFrame(data_types).reset_index()
-        data_types_df.columns = ['Column', 'Data Type']
-        st.write(data_types_df)
+            # Alternatively, you can display as a DataFrame for better formatting
+            data_types_df = pd.DataFrame(data_types).reset_index()
+            data_types_df.columns = ['Column', 'Data Type']
+            st.write(data_types_df)
 
-        # Display a sample of the data to confirm it's loaded correctly
-        # st.write("Sample Data")
-        # st.write(df.head())
+            # Display a sample of the data to confirm it's loaded correctly
+            # st.write("Sample Data")
+            # st.write(df.head())
 
-        st.write("Start data cleansing")
-
-
-        st.write("**** Unused columns removing ****")
-        if remove_columns_txt != '' :
-            remove_columns = remove_columns_txt.split(",")            
-            # Iterate over each fruit in the list
-            for remove_column in remove_columns:
-                df = df.drop(remove_column,axis=1)
-                st.write("Column '" + remove_column + "' removed")
-        st.write("**** Unused columns removed ****")
+            st.write("Start data cleansing")
 
 
-        st.write("**** Null value removing ****")
-        null_summary = df.isnull().sum()  # Count nulls in each column
-        null_columns = null_summary[null_summary > 0]  # Filter columns with nulls
-
-        if not null_columns.empty:
-            for column, count in null_columns.items():
-                st.write(f"- {column}: {count} null values")            
-            # Drop rows with any null values
-            df = df.dropna()  # Drop rows with any null values
-        st.write("**** Null value removed ****")
+            st.write("**** Unused columns removing ****")
+            if remove_columns_txt != '' :
+                remove_columns = remove_columns_txt.split(",")            
+                # Iterate over each fruit in the list
+                for remove_column in remove_columns:
+                    df = df.drop(remove_column,axis=1)
+                    st.write("Column '" + remove_column + "' removed")
+            st.write("**** Unused columns removed ****")
 
 
-        # Calculate the correlation matrix
-        correlation_matrix = df.corr()
+            st.write("**** Null value removing ****")
+            null_summary = df.isnull().sum()  # Count nulls in each column
+            null_columns = null_summary[null_summary > 0]  # Filter columns with nulls
 
-        # Set up the matplotlib figure
-        plt.figure(figsize=(10, 8))
-
-        # Create a heatmap using seaborn to visualize the correlation matrix
-        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
-
-        # Show the plot
-        plt.title('Correlation Matrix of Features')
-        plt.show()
-        st.pyplot(plt)
+            if not null_columns.empty:
+                for column, count in null_columns.items():
+                    st.write(f"- {column}: {count} null values")            
+                # Drop rows with any null values
+                df = df.dropna()  # Drop rows with any null values
+            st.write("**** Null value removed ****")
 
 
-        
-        st.write("**** IQR Processing ****")
-        if iqr_columns_txt != '':
-            iqr_columns = iqr_columns_txt.split(",")            
-            # Iterate over each column in the list
-            for iqr_column in iqr_columns:
-                # Calculate Q1, Q3, and IQR
-                Q1 = df[iqr_column].quantile(0.25)
-                Q3 = df[iqr_column].quantile(0.75)
-                IQR = Q3 - Q1
+            
+            st.write("**** IQR Processing ****")
+            if iqr_columns_txt != '':
+                iqr_columns = iqr_columns_txt.split(",")            
+                # Iterate over each column in the list
+                for iqr_column in iqr_columns:
+                    # Calculate Q1, Q3, and IQR
+                    Q1 = df[iqr_column].quantile(0.25)
+                    Q3 = df[iqr_column].quantile(0.75)
+                    IQR = Q3 - Q1
 
-                lower_bound = Q1 - 1.5 * IQR
-                upper_bound = Q3 + 1.5 * IQR
+                    lower_bound = Q1 - 1.5 * IQR
+                    upper_bound = Q3 + 1.5 * IQR
 
-                # Convert numerical values to strings for concatenation
-                st.write(f"{iqr_column} Q1: {Q1}, Q3: {Q3}, IQR: {IQR}, Lower bound: {lower_bound}, Upper bound: {upper_bound};")
+                    # Convert numerical values to strings for concatenation
+                    st.write(f"{iqr_column} Q1: {Q1}, Q3: {Q3}, IQR: {IQR}, Lower bound: {lower_bound}, Upper bound: {upper_bound};")
 
-                # Remove outliers from the DataFrame
-                df = df[(df[iqr_column] >= lower_bound) & (df[iqr_column] <= upper_bound)]
+                    # Remove outliers from the DataFrame
+                    df = df[(df[iqr_column] >= lower_bound) & (df[iqr_column] <= upper_bound)]
 
-        st.write("**** IQR Processed ****")
-
-        # Calculate the correlation matrix
-        correlation_matrix = df.corr()
-
-        # Set up the matplotlib figure
-        plt.figure(figsize=(10, 8))
-
-        # Create a heatmap using seaborn to visualize the correlation matrix
-        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
-
-        # Show the plot
-        plt.title('Correlation Matrix of Features')
-        plt.show()
-        st.pyplot(plt)
+            st.write("**** IQR Processed ****")
 
 
-        
-        st.write("**** Label Encoder Processing ****")
-        GENDER_encoder = LabelEncoder().fit(df['GENDER'])
-        CAR_encoder = LabelEncoder().fit(df['CAR'])
-        REALITY_encoder = LabelEncoder().fit(df['REALITY'])
-        INCOME_TYPE_encoder = LabelEncoder().fit(df['INCOME_TYPE'])
-        FAMILY_TYPE_encoder = LabelEncoder().fit(df['FAMILY_TYPE'])
-        EDUCATION_TYPE_encoder = LabelEncoder().fit(df['EDUCATION_TYPE'])
-        HOUSE_TYPE_encoder = LabelEncoder().fit(df['HOUSE_TYPE'])
+            
+            st.write("**** Label Encoder Processing ****")
+            GENDER_encoder = LabelEncoder().fit(df['GENDER'])
+            CAR_encoder = LabelEncoder().fit(df['CAR'])
+            REALITY_encoder = LabelEncoder().fit(df['REALITY'])
+            INCOME_TYPE_encoder = LabelEncoder().fit(df['INCOME_TYPE'])
+            FAMILY_TYPE_encoder = LabelEncoder().fit(df['FAMILY_TYPE'])
+            EDUCATION_TYPE_encoder = LabelEncoder().fit(df['EDUCATION_TYPE'])
+            HOUSE_TYPE_encoder = LabelEncoder().fit(df['HOUSE_TYPE'])
 
-        df['GENDER'] = GENDER_encoder.transform(df['GENDER'])
-        df['CAR'] = CAR_encoder.transform(df['CAR'])
-        df['REALITY'] = REALITY_encoder.transform(df['REALITY'])
-        df['INCOME_TYPE'] = INCOME_TYPE_encoder.transform(df['INCOME_TYPE'])
-        df['FAMILY_TYPE'] = FAMILY_TYPE_encoder.transform(df['FAMILY_TYPE'])
-        df['EDUCATION_TYPE'] = EDUCATION_TYPE_encoder.transform(df['EDUCATION_TYPE'])
-        df['HOUSE_TYPE'] = HOUSE_TYPE_encoder.transform(df['HOUSE_TYPE'])
+            df['GENDER'] = GENDER_encoder.transform(df['GENDER'])
+            df['CAR'] = CAR_encoder.transform(df['CAR'])
+            df['REALITY'] = REALITY_encoder.transform(df['REALITY'])
+            df['INCOME_TYPE'] = INCOME_TYPE_encoder.transform(df['INCOME_TYPE'])
+            df['FAMILY_TYPE'] = FAMILY_TYPE_encoder.transform(df['FAMILY_TYPE'])
+            df['EDUCATION_TYPE'] = EDUCATION_TYPE_encoder.transform(df['EDUCATION_TYPE'])
+            df['HOUSE_TYPE'] = HOUSE_TYPE_encoder.transform(df['HOUSE_TYPE'])
 
-        # text_columns = df.select_dtypes(include=['object']).columns.tolist()  # Get text columns
+            # text_columns = df.select_dtypes(include=['object']).columns.tolist()  # Get text columns
 
-        # if text_columns:            
-        #     # Encode each text column
-        #     for column in text_columns:
-        #         st.write("Label Encoding Column: " + column)  # Join list elements with a comma            
-        #         le = LabelEncoder().fit(df[column])
-        #         df[column] = le.transform(df[column])  # Encode the text column
-        #         label_encoders[column] = le  # Save the encoder for later use
+            # if text_columns:            
+            #     # Encode each text column
+            #     for column in text_columns:
+            #         st.write("Label Encoding Column: " + column)  # Join list elements with a comma            
+            #         le = LabelEncoder().fit(df[column])
+            #         df[column] = le.transform(df[column])  # Encode the text column
+            #         label_encoders[column] = le  # Save the encoder for later use
 
-        st.write("**** Label Encoder Processed ****")
+            st.write("**** Label Encoder Processed ****")
 
 
+
+            
+            st.write("**** Correlation Processing ****")
+            # Calculate the correlation matrix
+            correlation_matrix = df.corr()
+
+            # Set up the matplotlib figure
+            plt.figure(figsize=(10, 8))
+
+            # Create a heatmap using seaborn to visualize the correlation matrix
+            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+
+            # Show the plot
+            plt.title('Correlation Matrix of Features')
+            plt.show()
+            st.pyplot(plt)
 
         
-        st.write("**** Correlation Processing ****")
-        # Calculate the correlation matrix
-        correlation_matrix = df.corr()
+            # Get the correlation of all features with the target column
+            target_correlation = correlation_matrix[target_column]
 
-        # Set up the matplotlib figure
-        plt.figure(figsize=(10, 8))
+            # Filter features with absolute correlation greater than or equal to the threshold
+            features_above_threshold = target_correlation[abs(target_correlation) >= threshold]
 
-        # Create a heatmap using seaborn to visualize the correlation matrix
-        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+            # Create a list to store feature names and their correlation values
+            correlation_data = []
 
-        # Show the plot
-        plt.title('Correlation Matrix of Features')
-        plt.show()
-        st.pyplot(plt)
+            # Populate the correlation_data list with dictionaries
+            for feature, correlation_value in features_above_threshold.items():
+                if feature != target_column:  # Exclude the target column itself
+                    correlation_data.append({"Feature": feature, "Correlation": correlation_value})
 
-       
-        # Get the correlation of all features with the target column
-        target_correlation = correlation_matrix[target_column]
+            # Convert the list to a DataFrame
+            correlation_df = pd.DataFrame(correlation_data)
 
-        # Filter features with absolute correlation greater than or equal to the threshold
-        features_above_threshold = target_correlation[abs(target_correlation) >= threshold]
+            # Format the correlation values to two decimal places
+            correlation_df['Correlation'] = correlation_df['Correlation'].map(lambda x: f"{x:.2f}")
 
-        # Create a list to store feature names and their correlation values
-        correlation_data = []
+            # Drop duplicate entries if necessary
+            correlation_df = correlation_df.drop_duplicates(subset=["Feature"]).reset_index(drop=True)
 
-        # Populate the correlation_data list with dictionaries
-        for feature, correlation_value in features_above_threshold.items():
-            if feature != target_column:  # Exclude the target column itself
-                correlation_data.append({"Feature": feature, "Correlation": correlation_value})
-
-        # Convert the list to a DataFrame
-        correlation_df = pd.DataFrame(correlation_data)
-
-        # Format the correlation values to two decimal places
-        correlation_df['Correlation'] = correlation_df['Correlation'].map(lambda x: f"{x:.2f}")
-
-        # Drop duplicate entries if necessary
-        correlation_df = correlation_df.drop_duplicates(subset=["Feature"]).reset_index(drop=True)
-
-        # Display the features and their correlation values in a table
-        if not correlation_df.empty:
-            st.write(f"Features with correlation greater than {threshold}:")
-            st.table(correlation_df)
-        else:
-            st.write(f"No features found with correlation greater than {threshold}.")
+            # Display the features and their correlation values in a table
+            if not correlation_df.empty:
+                st.write(f"Features with correlation greater than {threshold}:")
+                st.table(correlation_df)
+            else:
+                st.write(f"No features found with correlation greater than {threshold}.")
 
 
-        st.write("**** Correlation Processed ****")
+            st.write("**** Correlation Processed ****")
 
+
+            
 
         
 
-       
+            st.write("Cleaned Data:")
+            st.write(df.head())
 
-        st.write("Cleaned Data:")
-        st.write(df.head())
-
-    except Exception as e:
-        st.error(f"An error occurred while loading the data: {e}")
-        
+        except Exception as e:
+            st.error(f"An error occurred while loading the data: {e}")
+    else:
+        st.warning("Please upload a CSV file before clicking the button.")    
