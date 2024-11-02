@@ -488,6 +488,37 @@ if st.button("Run Algorithm"):
 
             for model_info in model_list:
                 name = model_info['name']
+                summary_eval = model_info['summary_eval']
+                
+                # Extract metrics from the macro average
+                metrics = {
+                    'Model': name,
+                    'Accuracy': summary_eval['accuracy'],
+                    'Precision': summary_eval['macro avg']['precision'],
+                    'Recall': summary_eval['macro avg']['recall'],
+                    'F1-Score': summary_eval['macro avg']['f1-score']
+                }
+                
+                results.append(metrics)
+
+            # Create a DataFrame from the results
+            results_df = pd.DataFrame(results)
+
+            
+
+            # Create a heatmap for the metrics
+            plt.figure(figsize=(10, 6))
+            sns.heatmap(results_df.set_index('Model').T, annot=True, fmt=".4f", cmap='coolwarm', cbar=True)
+            plt.title('Model Performance Metrics')
+            plt.xlabel('Models')
+            plt.ylabel('Metrics')
+            plt.show()
+            st.pyplot(plt)
+
+            results = []
+
+            for model_info in model_list:
+                name = model_info['name']
                 model = model_info['model']
                 summary_eval = model_info['summary_eval']
                 
@@ -508,31 +539,28 @@ if st.button("Run Algorithm"):
 
             # Display the DataFrame
             st.write("### Model Performance Results")
+            st.write(f"**Model Name:** \t|**Accuracy:** \t|**Precision:** \t|**Recall:** \t|**F1-Score:** \t|")
             for index, row in results_df.iterrows():
-                st.write(f"**Model Name:** {row['Model name']}")
-                st.write(f"**Accuracy:** {row['Accuracy']:.2f}")
-                st.write(f"**Precision:** {row['Precision']:.2f}")
-                st.write(f"**Recall:** {row['Recall']:.2f}")
-                st.write(f"**F1-Score:** {row['F1-Score']:.2f}")                
-                # Add a button for each model
-                if st.button(f"Details for {row['Model name']}"):
-                    st.write(f"You clicked on {row['Model name']}!")  # Action for button click
+                # Creating two columns for inline layout
+                col1, col2, col3, col4, col5, col6 = st.columns([2, 1, 1, 1, 1, 2])  # Adjust the width ratio as needed
 
-                st.write("---")  # Separator for better readability
+                # Text in the first column
+                with col1:
+                    st.write(row['Model name'])
+                with col2:
+                    st.write(row['Accuracy'])
+                with col3:
+                    st.write(row['Precision'])
+                with col4:
+                    st.write(row['Recall'])
+                with col5:
+                    st.write(row['F1-Score'])
+
+                # Button in the second column
+                with col6:
+                    if st.button("Download"):
+                        st.success("Button clicked!")
                         
-           
-
-            # Create a heatmap for the metrics
-            heatmap_data = results_df.set_index('Model name').T  # Transpose the DataFrame to switch x and y
-
-            # Create a heatmap for the metrics
-            plt.figure(figsize=(10, 6))
-            sns.heatmap(heatmap_data, annot=True, fmt=".4f", cmap='coolwarm', cbar=True)
-            plt.title('Model Performance Metrics')
-            plt.xlabel('Metrics')
-            plt.ylabel('Models')  # Update the labels to reflect the swap
-            plt.show()
-            st.pyplot(plt)
 
         except Exception as e:
             st.error(f"An error occurred while loading the data: {e}")
