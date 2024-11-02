@@ -241,9 +241,10 @@ if st.button("Run Algorithm"):
                     st.write(f"{iqr_column} Q1: {Q1}, Q3: {Q3}, IQR: {IQR}, Lower bound: {lower_bound}, Upper bound: {upper_bound};")
 
                     # Remove outliers from the DataFrame
-                    df = df[(df[iqr_column] >= lower_bound) & (df[iqr_column] <= upper_bound)]
+                    df = df[(df[iqr_column] < lower_bound) | (df[iqr_column] > upper_bound)]
 
             st.write("**** IQR Processed ****")
+
 
 
             
