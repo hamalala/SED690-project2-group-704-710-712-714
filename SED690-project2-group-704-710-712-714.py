@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+
 
 def TrainAlg1(X_train, y_train, X_test, y_test):
   from sklearn.model_selection import GridSearchCV
@@ -170,7 +172,9 @@ st.title("Imbalance")
 st.write("Group: 704-710-712-714")
 st.write("\n\n")
 url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
+remove_columns_txt = st.text_input("Remove Column before process", value="NO,ID")
 number = st.number_input("Minimum Correlation", min_value=0.0, max_value=1.0, step=0.05)
+iqr_columns_txt = st.number_input("Request IQR process column", value="INCOME")
 
 
 if st.button("Run Algorithm"):
@@ -178,26 +182,93 @@ if st.button("Run Algorithm"):
     try:
         # Attempt to read the CSV file
         df = pd.read_csv(url + "/export?format=csv")
+        label_encoders = {}
 
         # Display a sample of the data to confirm it's loaded correctly
-        st.write("Sample Data")
+        # st.write("Sample Data")
+        # st.write(df.head())
+
+        st.write("Start data cleansing")
+
+
+        st.write("**** Unused columns removing ****")
+        if remove_columns_txt != '' :
+            remove_columns = remove_columns_txt.split(",")            
+            # Iterate over each fruit in the list
+            for remove_column in remove_columns:
+                df = df.drop(remove_column,axis=1)
+                st.write("Column '" + remove_column + "' removed")
+        st.write("**** Unused columns removed ****")
+
+
+        st.write("**** Null value removing ****")
+        null_summary = df.isnull().sum()  # Count nulls in each column
+        null_columns = null_summary[null_summary > 0]  # Filter columns with nulls
+
+        if not null_columns.empty:
+            for column, count in null_columns.items():
+                st.write(f"- {column}: {count} null values")            
+            # Drop rows with any null values
+            df = df.dropna()  # Drop rows with any null values
+        st.write("**** Null value removed ****")
+
+
+        
+        st.write("**** IQR Processing ****")
+        if iqr_columns_txt != '' :
+            iqr_columns = iqr_columns_txt.split(",")            
+            # Iterate over each fruit in the list
+            for iqr_column in iqr_columns:
+                Q1 = df[iqr_column].quantile(0.25)
+                Q3 = df[iqr_column].quantile(0.75)
+                IQR = Q3 - Q1
+
+                lower_bound = Q1 - 1.5 * IQR
+                upper_bound = Q3 + 1.5 * IQR
+                st.write(iqr_column + " Q1: " + Q1 + ", Q3: " + Q3+ ", IQR: " + IQR+ ", Lower bound: " + lower_bound+ ", Upper bound: " + upper_bound + " ;")
+
+                # Find outliers
+                df = df[(df[iqr_column] < lower_bound) | (df[iqr_column] > upper_bound)]
+        st.write("**** IQR Processed ****")
+
+
+        
+        st.write("**** Label Encoder Processing ****")
+        text_columns = df.select_dtypes(include=['object']).columns.tolist()
+        if text_columns:
+            st.write("Label Encoding Column:" + text_columns)            
+            # Encode each text column
+            for column in text_columns:
+                le = LabelEncoder()
+                df[column] = le.fit_transform(df[column])  # Encode the text column
+                label_encoders[column] = le  # Save the encoder for later use
+
+        st.write("**** Label Encoder Processed ****")
+
+
+
+        
+        st.write("**** Correlation Processing ****")
+        # Calculate the correlation matrix
+        correlation_matrix = df.corr()
+        # Set up the matplotlib figure
+        plt.figure(figsize=(10, 8))
+        # Create a heatmap using seaborn to visualize the correlation matrix
+        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+         # Show the plot
+        plt.title('Correlation Matrix of Features')
+        plt.show()
+        
+        st.pyplot(plt)
+        st.write("**** Correlation Processed ****")
+
+
+        
+
+       
+
+        st.write("Cleaned Data:")
         st.write(df.head())
-
-        # Create a DataFrame to hold the column names and unique values
-        unique_values_list = []
-        for column in df.columns:
-            unique_values = df[column].unique()
-            # Convert unique values to a string representation or list
-            unique_values_str = ', '.join(map(str, unique_values))  # Join values as a string
-            unique_values_list.append(unique_values_str)
-
-        unique_values_df = pd.DataFrame({
-            'Column': df.columns,
-            'Unique Values': unique_values_list
-        })
-
-        # Display the unique values table
-        st.table(unique_values_df)
 
     except Exception as e:
         st.error(f"An error occurred while loading the data: {e}")
