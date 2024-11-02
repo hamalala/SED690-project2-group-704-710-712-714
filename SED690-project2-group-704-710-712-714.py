@@ -173,7 +173,7 @@ st.write("Group: 704-710-712-714")
 st.write("\n\n")
 url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
 remove_columns_txt = st.text_input("Remove Column before process", value="NO,ID")
-number = st.number_input("Minimum Correlation", min_value=0.0, max_value=1.0, step=0.05)
+threshold = st.number_input("Minimum Correlation", min_value=0.0, max_value=1.0, step=0.05)
 iqr_columns_txt = st.text_input("Request IQR process column", value="INCOME")
 
 
@@ -249,12 +249,10 @@ if st.button("Run Algorithm"):
         st.write("**** Label Encoder Processing ****")
         text_columns = df.select_dtypes(include=['object']).columns.tolist()  # Get text columns
 
-        if text_columns:
-            # Convert the list of text columns to a string for display
-            st.write("Label Encoding Column: " + ", ".join(text_columns))  # Join list elements with a comma            
-            
+        if text_columns:            
             # Encode each text column
             for column in text_columns:
+                st.write("Label Encoding Column: " + column)  # Join list elements with a comma            
                 le = LabelEncoder()
                 df[column] = le.fit_transform(df[column])  # Encode the text column
                 label_encoders[column] = le  # Save the encoder for later use
@@ -274,8 +272,30 @@ if st.button("Run Algorithm"):
          # Show the plot
         plt.title('Correlation Matrix of Features')
         plt.show()
-
         st.pyplot(plt)
+
+        # Get pairs of features with correlation greater than the threshold
+        high_correlation_pairs = correlation_matrix[(correlation_matrix.abs() > threshold) & (correlation_matrix != 1)]
+
+        # Create a set to store the feature names
+        features_above_threshold = set()
+
+        # Iterate through the high correlation pairs and extract feature names
+        for column in high_correlation_pairs.columns:
+            correlated_features = high_correlation_pairs.index[high_correlation_pairs[column].abs() > threshold].tolist()
+            features_above_threshold.update(correlated_features)
+
+        # Convert the set to a sorted list
+        features_above_threshold = sorted(features_above_threshold)
+
+        # Display the features with correlation greater than the threshold
+        if features_above_threshold:
+            st.write(f"Features with correlation greater than {threshold}:")
+            st.write(features_above_threshold)
+        else:
+            st.write(f"No features found with correlation greater than {threshold}.")
+
+
         st.write("**** Correlation Processed ****")
 
 
