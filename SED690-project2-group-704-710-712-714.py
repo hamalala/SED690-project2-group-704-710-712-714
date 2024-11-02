@@ -252,8 +252,8 @@ if st.button("Run Algorithm"):
             # Encode each text column
             for column in text_columns:
                 st.write("Label Encoding Column: " + column)  # Join list elements with a comma            
-                le = LabelEncoder()
-                df[column] = le.fit_transform(df[column])  # Encode the text column
+                le = LabelEncoder().fit(df[column])
+                df[column] = le.transform(df[column])  # Encode the text column
                 label_encoders[column] = le  # Save the encoder for later use
 
         st.write("**** Label Encoder Processed ****")
