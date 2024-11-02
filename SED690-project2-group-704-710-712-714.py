@@ -175,13 +175,23 @@ number = st.number_input("Minimum Correlation", min_value=0.0, max_value=1.0, st
 
 if st.button("Run Algorithm"):
     st.write("Analize Data from " + url + "/export?format=csv")
-    df = pd.read_csv(url + "/export?format=csv", header=None)
+    try:
+        # Attempt to read the CSV file
+        df = pd.read_csv(url + "/export?format=csv")
 
-    # Create a new DataFrame to hold the column names and unique values
-    unique_values_df = pd.DataFrame({
-        'Column': df.columns,
-        'Unique Values': [df[column].unique() for column in df.columns]
-    })
-    # Display the unique values table
-    st.table(unique_values_df)
+        # Display a sample of the data to confirm it's loaded correctly
+        st.write("Sample Data")
+        st.write(df.head())
+
+        # Create a DataFrame to hold the column names and unique values
+        unique_values_df = pd.DataFrame({
+            'Column': df.columns,
+            'Unique Values': [df[column].unique() for column in df.columns]
+        })
+
+        # Display the unique values table
+        st.table(unique_values_df)
+
+    except Exception as e:
+        st.error(f"An error occurred while loading the data: {e}")
         
