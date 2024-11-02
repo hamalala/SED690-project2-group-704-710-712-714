@@ -401,13 +401,13 @@ if st.button("Run Algorithm"):
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
             st.markdown("###Alg1: RandomForest")
-            model_list[0] = TrainAlg1('RandomForest with out imbalance', X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg1('RandomForest with out imbalance', X_train, y_train, X_test, y_test))
 
             st.markdown("###Alg2: Naive bayes")
-            model_list[1] = TrainAlg2('Naive bayes with out imbalance',X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg2('Naive bayes with out imbalance',X_train, y_train, X_test, y_test))
 
             st.markdown("###Alg3: Logistic Regression ")
-            model_list[2] = TrainAlg3('Logistic Regression with out imbalance',X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg3('Logistic Regression with out imbalance',X_train, y_train, X_test, y_test))
 
 
 
@@ -425,13 +425,13 @@ if st.button("Run Algorithm"):
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
             st.markdown("###Alg1: RandomForest")
-            model_list[3] = TrainAlg1('RandomForest with OverSampling',X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg1('RandomForest with OverSampling',X_train, y_train, X_test, y_test))
 
             st.markdown("###Alg2: Naive bayes")
-            model_list[4] = TrainAlg2('Naive bayes with OverSampling', X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg2('Naive bayes with OverSampling', X_train, y_train, X_test, y_test))
 
             st.markdown("###Alg3: Logistic Regression ")
-            model_list[5] = TrainAlg3('Logistic Regression with OverSampling', X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg3('Logistic Regression with OverSampling', X_train, y_train, X_test, y_test))
 
 
 
@@ -449,13 +449,13 @@ if st.button("Run Algorithm"):
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
             st.markdown("###Alg1: RandomForest")
-            model_list[6] = TrainAlg1('RandomForest with SMOTE', X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg1('RandomForest with SMOTE', X_train, y_train, X_test, y_test))
 
             st.markdown("###Alg2: Naive bayes")
-            model_list[7] = TrainAlg2('Naive bayes with SMOTE',X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg2('Naive bayes with SMOTE',X_train, y_train, X_test, y_test))
 
             st.markdown("###Alg3: Logistic Regression ")
-            model_list[8] = TrainAlg3('Logistic Regression with SMOTE',X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg3('Logistic Regression with SMOTE',X_train, y_train, X_test, y_test))
 
 
 
@@ -474,43 +474,47 @@ if st.button("Run Algorithm"):
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
             st.markdown("###Alg1: RandomForest")
-            model_list[9] = TrainAlg1('RandomForest with Undersampling', X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg1('RandomForest with Undersampling', X_train, y_train, X_test, y_test))
 
             st.markdown("###Alg2: Naive bayes")
-            model_list[10] = TrainAlg2('Naive bayes with Undersampling', X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg2('Naive bayes with Undersampling', X_train, y_train, X_test, y_test))
 
             st.markdown("###Alg3: Logistic Regression ")
-            model_list[11] = TrainAlg3('Logistic Regression with Undersampling', X_train, y_train, X_test, y_test)
+            model_list.append(TrainAlg3('Logistic Regression with Undersampling', X_train, y_train, X_test, y_test))
 
 
-            metrics = []
-            # Iterate through each model in the model_list
+            # Assuming model_list is already filled with the models and their evaluation summaries
+            results = []
+
             for model_info in model_list:
+                name = model_info['name']
                 summary_eval = model_info['summary_eval']
                 
-                # Extract metrics from macro average
-                metrics.append({
-                    'Model': model_info['name'],
+                # Extract metrics from the macro average
+                metrics = {
+                    'Model': name,
                     'Accuracy': summary_eval['accuracy'],
                     'Precision': summary_eval['macro avg']['precision'],
                     'Recall': summary_eval['macro avg']['recall'],
                     'F1-Score': summary_eval['macro avg']['f1-score']
-                })
+                }
+                
+                results.append(metrics)
 
-            # Create a DataFrame from the metrics list
-            metrics_df = pd.DataFrame(metrics)
+            # Create a DataFrame from the results
+            results_df = pd.DataFrame(results)
 
             # Display the DataFrame
-            print(metrics_df)
+            print(results_df)
 
-            # Create a heatmap
+            # Create a heatmap for the metrics
             plt.figure(figsize=(10, 6))
-            sns.heatmap(metrics_df.set_index('Model').T, annot=True, cmap='YlGnBu', fmt=".4f")
-            plt.title('Model Evaluation Metrics')
-            plt.ylabel('Metrics')
+            sns.heatmap(results_df.set_index('Model').T, annot=True, fmt=".4f", cmap='coolwarm', cbar=True)
+            plt.title('Model Performance Metrics')
             plt.xlabel('Models')
+            plt.ylabel('Metrics')
             plt.show()
-
+            st.pyplot(plt)
 
         except Exception as e:
             st.error(f"An error occurred while loading the data: {e}")
