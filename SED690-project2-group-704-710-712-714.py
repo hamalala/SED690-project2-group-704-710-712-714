@@ -385,13 +385,13 @@ if st.button("Run Algorithm"):
             plt.show()
             st.pyplot(plt)
 
-            st.write("Cleaned Data:")
+            st.write("Cleaned Data")
             
 
 
             model_list = []
 
-            st.markdown("##With out imbalance")
+            st.markdown("## With out imbalance")
             value_counts = pd.Series(y).value_counts()
             value_counts_df = value_counts.reset_index()
             value_counts_df.columns = ['Value', 'Count']
@@ -400,19 +400,19 @@ if st.button("Run Algorithm"):
 
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            st.markdown("###Alg1: RandomForest")
+            st.markdown("### Alg1: RandomForest")
             model_list.append(TrainAlg1('RandomForest with out imbalance', X_train, y_train, X_test, y_test))
 
-            st.markdown("###Alg2: Naive bayes")
+            st.markdown("### Alg2: Naive bayes")
             model_list.append(TrainAlg2('Naive bayes with out imbalance',X_train, y_train, X_test, y_test))
 
-            st.markdown("###Alg3: Logistic Regression ")
+            st.markdown("### Alg3: Logistic Regression ")
             model_list.append(TrainAlg3('Logistic Regression with out imbalance',X_train, y_train, X_test, y_test))
 
 
 
             # OverSampling
-            st.markdown("##With imbalance : OverSampling")
+            st.markdown("## With imbalance : OverSampling")
            
             # สร้างตัวอย่างเพิ่มโดยการทำ Oversampling
             ros = RandomOverSampler(random_state=42)
@@ -424,19 +424,19 @@ if st.button("Run Algorithm"):
             st.table(value_counts_df)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("###Alg1: RandomForest")
+            st.markdown("### Alg1: RandomForest")
             model_list.append(TrainAlg1('RandomForest with OverSampling',X_train, y_train, X_test, y_test))
 
-            st.markdown("###Alg2: Naive bayes")
+            st.markdown("### Alg2: Naive bayes")
             model_list.append(TrainAlg2('Naive bayes with OverSampling', X_train, y_train, X_test, y_test))
 
-            st.markdown("###Alg3: Logistic Regression ")
+            st.markdown("### Alg3: Logistic Regression ")
             model_list.append(TrainAlg3('Logistic Regression with OverSampling', X_train, y_train, X_test, y_test))
 
 
 
             #SMOTE
-            st.markdown("##With imbalance : SMOTE")
+            st.markdown("## With imbalance : SMOTE")
            
             # สร้างตัวแปร SMOTEENN
             smote_enn = SMOTEENN(random_state=42)
@@ -448,19 +448,19 @@ if st.button("Run Algorithm"):
             st.table(value_counts_df)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("###Alg1: RandomForest")
+            st.markdown("### Alg1: RandomForest")
             model_list.append(TrainAlg1('RandomForest with SMOTE', X_train, y_train, X_test, y_test))
 
-            st.markdown("###Alg2: Naive bayes")
+            st.markdown("### Alg2: Naive bayes")
             model_list.append(TrainAlg2('Naive bayes with SMOTE',X_train, y_train, X_test, y_test))
 
-            st.markdown("###Alg3: Logistic Regression ")
+            st.markdown("### Alg3: Logistic Regression ")
             model_list.append(TrainAlg3('Logistic Regression with SMOTE',X_train, y_train, X_test, y_test))
 
 
 
             #Undersampling
-            st.markdown("##With imbalance : Undersampling")
+            st.markdown("## With imbalance : Undersampling")
            
             # สร้างตัวแปร Undersampling
             rus = RandomUnderSampler()
@@ -473,13 +473,13 @@ if st.button("Run Algorithm"):
             st.table(value_counts_df)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
-            st.markdown("###Alg1: RandomForest")
+            st.markdown("### Alg1: RandomForest")
             model_list.append(TrainAlg1('RandomForest with Undersampling', X_train, y_train, X_test, y_test))
 
-            st.markdown("###Alg2: Naive bayes")
+            st.markdown("### Alg2: Naive bayes")
             model_list.append(TrainAlg2('Naive bayes with Undersampling', X_train, y_train, X_test, y_test))
 
-            st.markdown("###Alg3: Logistic Regression ")
+            st.markdown("### Alg3: Logistic Regression ")
             model_list.append(TrainAlg3('Logistic Regression with Undersampling', X_train, y_train, X_test, y_test))
 
 
@@ -505,14 +505,14 @@ if st.button("Run Algorithm"):
             results_df = pd.DataFrame(results)
 
             # Display the DataFrame
-            print(results_df)
+            st.table(results_df)
 
             # Create a heatmap for the metrics
             plt.figure(figsize=(10, 6))
             sns.heatmap(results_df.set_index('Model').T, annot=True, fmt=".4f", cmap='coolwarm', cbar=True)
             plt.title('Model Performance Metrics')
-            plt.xlabel('Models')
-            plt.ylabel('Metrics')
+            plt.ylabel('Models')
+            plt.xlabel('Metrics')
             plt.show()
             st.pyplot(plt)
 
