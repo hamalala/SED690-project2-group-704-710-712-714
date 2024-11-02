@@ -175,7 +175,7 @@ url = st.text_input("Enter a google sheet url", value="https://docs.google.com/s
 remove_columns_txt = st.text_input("Remove Column before process", value="NO,ID")
 threshold = st.number_input("Minimum Correlation", min_value=0.0, max_value=1.0, step=0.05)
 iqr_columns_txt = st.text_input("Request IQR process column", value="INCOME")
-
+target_column = st.text_input("Target column", value="TARGET")
 
 if st.button("Run Algorithm"):
     st.write("Analize Data from " + url + "/export?format=csv")
@@ -277,21 +277,27 @@ if st.button("Run Algorithm"):
         # Get pairs of features with correlation greater than the threshold
         high_correlation_pairs = correlation_matrix[(correlation_matrix.abs() > threshold) & (correlation_matrix != 1)]
 
-        # Create a set to store the feature names
-        features_above_threshold = set()
+        # Create a list to store feature names and their correlation values
+        correlation_data = []
 
-        # Iterate through the high correlation pairs and extract feature names
+        # Iterate through the high correlation pairs and extract feature names and correlation values
         for column in high_correlation_pairs.columns:
             correlated_features = high_correlation_pairs.index[high_correlation_pairs[column].abs() > threshold].tolist()
-            features_above_threshold.update(correlated_features)
+            for feature in correlated_features:
+                correlation_value = high_correlation_pairs[column][feature]  # Get correlation value
+                if feature != target_column :
+                    correlation_data.append({"Feature": feature, "Correlation": correlation_value})
 
-        # Convert the set to a sorted list
-        features_above_threshold = sorted(features_above_threshold)
+        # Convert the list to a DataFrame
+        correlation_df = pd.DataFrame(correlation_data)
 
-        # Display the features with correlation greater than the threshold
-        if features_above_threshold:
+        # Drop duplicate entries if necessary, keeping the feature name and its highest correlation value
+        correlation_df = correlation_df.drop_duplicates(subset=["Feature"]).reset_index(drop=True)
+
+        # Display the features and their correlation values in a table
+        if not correlation_df.empty:
             st.write(f"Features with correlation greater than {threshold}:")
-            st.write(features_above_threshold)
+            st.table(correlation_df)
         else:
             st.write(f"No features found with correlation greater than {threshold}.")
 
