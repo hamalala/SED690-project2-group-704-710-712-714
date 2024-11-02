@@ -249,21 +249,6 @@ if st.button("Run Algorithm"):
 
             
             st.write("**** Label Encoder Processing ****")
-            # GENDER_encoder = LabelEncoder().fit(df['GENDER'])
-            # CAR_encoder = LabelEncoder().fit(df['CAR'])
-            # REALITY_encoder = LabelEncoder().fit(df['REALITY'])
-            # INCOME_TYPE_encoder = LabelEncoder().fit(df['INCOME_TYPE'])
-            # FAMILY_TYPE_encoder = LabelEncoder().fit(df['FAMILY_TYPE'])
-            # EDUCATION_TYPE_encoder = LabelEncoder().fit(df['EDUCATION_TYPE'])
-            # HOUSE_TYPE_encoder = LabelEncoder().fit(df['HOUSE_TYPE'])
-
-            # df['GENDER'] = GENDER_encoder.transform(df['GENDER'])
-            # df['CAR'] = CAR_encoder.transform(df['CAR'])
-            # df['REALITY'] = REALITY_encoder.transform(df['REALITY'])
-            # df['INCOME_TYPE'] = INCOME_TYPE_encoder.transform(df['INCOME_TYPE'])
-            # df['FAMILY_TYPE'] = FAMILY_TYPE_encoder.transform(df['FAMILY_TYPE'])
-            # df['EDUCATION_TYPE'] = EDUCATION_TYPE_encoder.transform(df['EDUCATION_TYPE'])
-            # df['HOUSE_TYPE'] = HOUSE_TYPE_encoder.transform(df['HOUSE_TYPE'])
 
             text_columns = df.select_dtypes(include=['object']).columns.tolist()  # Get text columns
 
@@ -314,7 +299,7 @@ if st.button("Run Algorithm"):
             correlation_df = pd.DataFrame(correlation_data)
 
             # Format the correlation values to two decimal places
-            # correlation_df['Correlation'] = correlation_df['Correlation'].map(lambda x: f"{x:.2f}")
+            correlation_df['Correlation'] = correlation_df['Correlation'].map(lambda x: f"{x:.2f}")
 
             # Drop duplicate entries if necessary
             correlation_df = correlation_df.drop_duplicates(subset=["Feature"]).reset_index(drop=True)
