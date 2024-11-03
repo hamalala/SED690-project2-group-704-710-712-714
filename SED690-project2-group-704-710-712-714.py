@@ -14,12 +14,12 @@ from imblearn.under_sampling import RandomUnderSampler
 import pickle
 
 # กำหนด URL หรือเส้นทางของภาพพื้นหลัง 
-background_image_url = "/gears-28-920x518.jpg" 
+background_image_url = "gears-28-920x518.jpg" 
 # กำหนดสีที่ต้องการ 
 text_color = "#000000" 
 # สีที่คุณต้องการ 
 # ใส่ CSS สำหรับพื้นหลังและสีตัวอักษร 
-st.markdown( f""" <style> .stApp {{ background-image: url('{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }} </style> """, unsafe_allow_html=True )
+st.markdown( f""" <style> .stApp {{ background-image: url('file://{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }} </style> """, unsafe_allow_html=True )
 
 
 def TrainAlg1(name, X_train, y_train, X_test, y_test):
