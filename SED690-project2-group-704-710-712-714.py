@@ -210,9 +210,30 @@ def TrainAlg3(name, X_train, y_train, X_test, y_test):
     rt = dict(name= name, model=summary_df, summary_eval=summary_eval)
     return rt
 
+def PCAPlot (X, y) :
+    # Standardize the features
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Apply PCA
+    pca = PCA(n_components=2)
+    X_pca = pca.fit_transform(X_scaled)
+
+    # Create a DataFrame with PCA components and target variable
+    pca_df = pd.DataFrame(data={'PCA1': X_pca[:, 0], 'PCA2': X_pca[:, 1], 'target': y})
+
+    # Plot the PCA components
+    plt.figure(figsize=(10, 8))
+    sns.scatterplot(x='PCA1', y='PCA2', hue='target', data=pca_df, palette='viridis', s=50)
+    plt.title('PCA of Features Colored by Target Variable')
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.legend(title='Target', loc='upper right')
+    plt.show()
+    st.pyplot(plt)
 
 # Set title
-st.title("Automate Imbalance")
+st.title("Imbalance")
 st.write("Group: 704-710-712-714")
 st.write("\n\n")
 # url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
@@ -280,6 +301,8 @@ if st.session_state.run_algorithm:
                     df = df.drop(remove_column,axis=1)
                     st.write("Column '" + remove_column + "' removed")
             st.write("**** Unused columns removed ****")
+            st.write("---")
+
 
 
             st.write("**** Null value removing ****")
@@ -292,6 +315,7 @@ if st.session_state.run_algorithm:
                 # Drop rows with any null values
                 df = df.dropna()  # Drop rows with any null values
             st.write("**** Null value removed ****")
+            st.write("---")
 
 
             
@@ -315,6 +339,7 @@ if st.session_state.run_algorithm:
                     df = df[(df[iqr_column] < lower_bound) | (df[iqr_column] > upper_bound)]
 
             st.write("**** IQR Processed ****")
+            st.write("---")
 
 
 
@@ -332,6 +357,7 @@ if st.session_state.run_algorithm:
                     label_encoders[column] = le  # Save the encoder for later use
 
             st.write("**** Label Encoder Processed ****")
+            st.write("---")
 
 
 
@@ -390,29 +416,9 @@ if st.session_state.run_algorithm:
             y = df[target_column]
 
 
-            
-            # Standardize the features
-            scaler = StandardScaler()
-            X_scaled = scaler.fit_transform(X)
-
-            # Apply PCA
-            pca = PCA(n_components=2)
-            X_pca = pca.fit_transform(X_scaled)
-
-            # Create a DataFrame with PCA components and target variable
-            pca_df = pd.DataFrame(data={'PCA1': X_pca[:, 0], 'PCA2': X_pca[:, 1], 'target': y})
-
-            # Plot the PCA components
-            plt.figure(figsize=(10, 8))
-            sns.scatterplot(x='PCA1', y='PCA2', hue='target', data=pca_df, palette='viridis', s=50)
-            plt.title('PCA of Features Colored by Target Variable')
-            plt.xlabel('Principal Component 1')
-            plt.ylabel('Principal Component 2')
-            plt.legend(title='Target', loc='upper right')
-            plt.show()
-            st.pyplot(plt)
-
             st.write("Cleaned Data")
+            st.write("---")
+            st.write("---")
             
 
 
@@ -424,6 +430,8 @@ if st.session_state.run_algorithm:
             value_counts_df.columns = ['Value', 'Count']
             st.write("Value Counts of Target Column:")
             st.table(value_counts_df)
+
+            PCAPlot(X, y)
 
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -438,6 +446,7 @@ if st.session_state.run_algorithm:
 
 
 
+            st.write("---")
             # OverSampling
             st.markdown("## With imbalance : OverSampling")
            
@@ -449,6 +458,8 @@ if st.session_state.run_algorithm:
             value_counts_df.columns = ['Value', 'Count']
             st.write("Value Counts of Target Column:")
             st.table(value_counts_df)
+
+            PCAPlot(X_res, y_res)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
             st.markdown("### Alg1: RandomForest")
@@ -462,6 +473,7 @@ if st.session_state.run_algorithm:
 
 
 
+            st.write("---")
             #SMOTE
             st.markdown("## With imbalance : SMOTE")
            
@@ -473,6 +485,8 @@ if st.session_state.run_algorithm:
             value_counts_df.columns = ['Value', 'Count']
             st.write("Value Counts of Target Column:")
             st.table(value_counts_df)
+
+            PCAPlot(X_res, y_res)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
             st.markdown("### Alg1: RandomForest")
@@ -486,6 +500,7 @@ if st.session_state.run_algorithm:
 
 
 
+            st.write("---")
             #Undersampling
             st.markdown("## With imbalance : Undersampling")
            
@@ -498,6 +513,8 @@ if st.session_state.run_algorithm:
             value_counts_df.columns = ['Value', 'Count']
             st.write("Value Counts of Target Column:")
             st.table(value_counts_df)
+
+            PCAPlot(X_res, y_res)
 
             X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
             st.markdown("### Alg1: RandomForest")
@@ -564,6 +581,8 @@ if st.session_state.run_algorithm:
             # Create a DataFrame from the results
             results_df = pd.DataFrame(results)
 
+            st.write("---")
+            st.write("---")
             # Display the DataFrame
             st.write("### Model Performance Results")
             col1, col2, col3, col4, col5, col6 = st.columns([2, 1, 1, 1, 1, 2])
