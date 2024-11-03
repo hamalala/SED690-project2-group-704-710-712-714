@@ -378,7 +378,7 @@ if st.session_state.run_algorithm:
             plt.figure(figsize=(10, 8))
 
             # Create a heatmap using seaborn to visualize the correlation matrix
-            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.3f', linewidths=0.5, annot_kws={"size": 8})
+            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.3f', linewidths=0.5, annot_kws={"size": 7})
 
             # Show the plot
             plt.title('Correlation Matrix of Features')
