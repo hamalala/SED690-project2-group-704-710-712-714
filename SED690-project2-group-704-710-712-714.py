@@ -14,7 +14,7 @@ from imblearn.under_sampling import RandomUnderSampler
 import pickle
 
 # กำหนด URL หรือเส้นทางของภาพพื้นหลัง 
-background_image_url = "gears-28-920x518.jpg" 
+background_image_url = "/gears-28-920x518.jpg" 
 # กำหนดสีที่ต้องการ 
 text_color = "#000000" 
 # สีที่คุณต้องการ 
