@@ -241,7 +241,7 @@ def PCAPlot (X, y) :
     st.pyplot(plt)
 
 # Set title
-st.title("Imbalance")
+st.title("Automate Imbalance Training")
 st.write("Group: 704-710-712-714")
 st.write("\n\n")
 # url = st.text_input("Enter a google sheet url", value="https://docs.google.com/spreadsheets/d/1KAGq9A2ppV1aU4WbvDsIq6ATqH7Nehy6PixRpEIO_L8")
