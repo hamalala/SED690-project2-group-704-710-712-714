@@ -19,7 +19,7 @@ background_image_url = "https://wallpaperboat.com/wp-content/uploads/2020/12/14/
 text_color = "#000000" 
 # สีที่คุณต้องการ 
 # ใส่ CSS สำหรับพื้นหลังและสีตัวอักษร 
-st.markdown( f""" <style> .stApp {{ background-image: url('{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }}.block-container{{background-color: #fff;box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);}} </style> """, unsafe_allow_html=True )
+st.markdown( f""" <style> .stApp {{ background-image: url('{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }}.block-container{{background-color: rgb(225 225 225 / 50%);box-shadow: 2px 5px 15px rgba(0, 0, 0, 0.3);}} </style> """, unsafe_allow_html=True )
 
 def TrainAlg1(name, X_train, y_train, X_test, y_test):
     from sklearn.pipeline import Pipeline
