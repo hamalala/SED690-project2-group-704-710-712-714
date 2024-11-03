@@ -19,9 +19,9 @@ background_image_url = "https://wallpaperboat.com/wp-content/uploads/2020/12/14/
 text_color = "#000000" 
 # สีที่คุณต้องการ 
 # ใส่ CSS สำหรับพื้นหลังและสีตัวอักษร 
-st.markdown( f""" <style> .stApp {{ background-image: url('{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }} </style> """, unsafe_allow_html=True )
-
-
+st.markdown( f""" <style> .stApp {{ background-image: url('{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }}.backdrop {{position: absolute;top: 0;left: 0;right: 0;bottom: 0;background-color: rgba(60, 60, 60, 0.5);z-index: 1;}}.content {{position: relative;z-index: 2;color: white; }} </style> """, unsafe_allow_html=True )
+st.markdown('<div class="backdrop"></div>', unsafe_allow_html=True)
+st.markdown('<div class="content">', unsafe_allow_html=True)
 def TrainAlg1(name, X_train, y_train, X_test, y_test):
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import StandardScaler
@@ -657,3 +657,4 @@ if st.session_state.run_algorithm:
             st.error(f"An error occurred while loading the data: {e}")
     else:
         st.warning("Please upload a CSV file before clicking the button.")    
+    st.markdown('</div>', unsafe_allow_html=True)
