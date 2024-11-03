@@ -14,7 +14,7 @@ from imblearn.under_sampling import RandomUnderSampler
 import pickle
 
 # กำหนด URL หรือเส้นทางของภาพพื้นหลัง 
-background_image_url = "https://drive.google.com/uc?id=1HeWnVnhx6eO0FCQ5P8HefR93NNj1I0yp" 
+background_image_url = "https://photos.app.goo.gl/8gNmK2MqL2cKYbEZ9"
 # กำหนดสีที่ต้องการ 
 text_color = "#000000" 
 # สีที่คุณต้องการ 
