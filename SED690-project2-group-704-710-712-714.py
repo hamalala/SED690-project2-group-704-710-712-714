@@ -252,6 +252,10 @@ iqr_columns_txt = st.text_input("Request IQR process column", value="INCOME")
 target_column = st.text_input("Target column", value="TARGET")
 
 
+class0_label = st.text_input("Class 0 label", value="Non-fraudulent")
+class1_label = st.text_input("Class 1 label", value="Fraudulent")
+
+
 if 'run_algorithm' not in st.session_state:
     st.session_state.run_algorithm = False
 
@@ -621,7 +625,9 @@ if st.session_state.run_algorithm:
                     "features": features,
                     "target": target_column,
                     
-                    "label_encoders": label_encoders
+                    "label_encoders": label_encoders,
+                    "class0_label": class0_label,
+                    "class1_label": class1_label
                 }
 
                 # Save the model and JSON data into a .pkl file
